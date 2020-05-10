@@ -1,4 +1,3 @@
-library(dplyr)
 
 # 1. Read in the file, making the gene accession numbers the row names. 
 #    Show a table of values for the first six genes.
@@ -14,8 +13,8 @@ gene_expression_data$Mean <- rowMeans(gene_expression_data[,1:2])
 head(gene_expression_data, n=6)
 
 # 3. List the 10 genes with the highest mean expression
-top10_mean <- top_n(gene_expression_data, 10, Mean)
-top10_mean
+gene_ordered <- gene_expression_data[order(-gene_expression_data$Mean),]
+head(gene_ordered, 10)
 
 # 4. Determine the number of genes with a mean <10
 lessthan10 <- gene_expression_data[(gene_expression_data[,3]<10),]
