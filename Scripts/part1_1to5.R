@@ -23,3 +23,40 @@ nrow(lessthan10)
 # 5. Make a histogram plot of the mean values in png format and paste it into your report.
 hist(gene_expression_data$Mean)
 
+# 6. Import this csv file into an R object.
+# What are the column names?
+
+growth_data <- read.csv("~/projects/SLE712-Assignment-3/Data/part1_growth_data.csv",
+                        header = TRUE, stringsAsFactors = FALSE)
+
+column <- colnames(growth_data)
+column
+
+# 7. Calculate the mean and standard deviation of tree circumference at the start and end of the study at both sites.
+
+growth1 <- growth_data[c(1:50),c(1:6)]
+# other way.
+ne <- subset(growth_data, Site== "northeast")
+head(ne)
+# Which one do you think is better?
+
+mean_end2 <- mean(growth1$Circumf_2004_cm)
+mean_end1 <- mean(growth1$Circumf_2019_cm)
+
+growth2 <- growth_data[c(51:100), c(1:6)]
+# other way
+sw <- subset(growth_data, Site == "southwest")
+head(sw)
+mean_start2 <- mean(growth2$Circumf_2004_cm)
+mean_end2 <- mean(growth2$Circumf_2019_cm)
+
+sd(growth1$Circumf_2004_cm)
+sd(growth1$Circumf_2019_cm)
+
+sd(growth2$Circumf_2004_cm)
+sd(growth2$Circumf_2019_cm)
+
+# 8. Make a box plot of tree circumference at the start and end of the study at both sites.
+boxplot(growth1$Circumf_2004_cm, growth1$Circumf_2019_cm, growth2$Circumf_2004_cm, growth2$Circumf_2019_cm, names = c("NE 2004", "NE 2019", "SW 2004","SW 2019"), ylab= "Circumfrence (cm)" , xlab = "Sites and year" , main = "Growth at two different sites during 2004 and 2019")
+
+# 9. Calculate the mean growth over the past 10 years at each site.
