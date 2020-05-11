@@ -2,13 +2,13 @@
 SLE712 Assignment 3 – The assignment is a part of the unit SLE712 - Bioinformatics and Molecular Biology Techniques (Trimester 1, 2020). The aim of the project is to develop necessary skills in the programming.
 
 ## Motivation
+The project consists of two tasks that employs handling data in R and working as a team using Rstudio and Github.
 
 ## Contents
 * Readme file
 * Data
 * Scripts
 * License
-*
 *
 
 ## Installation
