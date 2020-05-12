@@ -35,30 +35,30 @@ column <- colnames(growth_data)
 column
 
 # 7. Calculate the mean and standard deviation of tree circumference at the start and end of the study at both sites.
-
-growth1 <- growth_data[c(1:50),c(1:6)]
-# other way.
+# For northeast
 ne <- subset(growth_data, Site=="northeast")
 head(ne)
-# Which one do you think is better?
 
-mean_end2 <- mean(growth1$Circumf_2004_cm)
-mean_end1 <- mean(growth1$Circumf_2019_cm)
+mean_end2 <- mean(ne$Circumf_2004_cm)
+mean_end1 <- mean(ne$Circumf_2019_cm)
 
-growth2 <- growth_data[c(51:100), c(1:6)]
-# other way
+sd(ne$Circumf_2004_cm)
+sd(ne$Circumf_2019_cm)
+
+# For southwest
 sw <- subset(growth_data, Site == "southwest")
 head(sw)
-mean_start2 <- mean(growth2$Circumf_2004_cm)
-mean_end2 <- mean(growth2$Circumf_2019_cm)
 
-sd(growth1$Circumf_2004_cm)
-sd(growth1$Circumf_2019_cm)
+mean_start2 <- mean(sw$Circumf_2004_cm)
+mean_end2 <- mean(sw$Circumf_2019_cm)
 
-sd(growth2$Circumf_2004_cm)
-sd(growth2$Circumf_2019_cm)
+sd(sw$Circumf_2004_cm)
+sd(sw$Circumf_2019_cm)
 
 # 8. Make a box plot of tree circumference at the start and end of the study at both sites.
-boxplot(growth1$Circumf_2004_cm, growth1$Circumf_2019_cm, growth2$Circumf_2004_cm, growth2$Circumf_2019_cm, names = c("NE 2004", "NE 2019", "SW 2004","SW 2019"), ylab= "Circumfrence (cm)" , xlab = "Sites and year" , main = "Growth at two different sites during 2004 and 2019")
+boxplot(ne$Circumf_2004_cm, ne$Circumf_2019_cm, sw$Circumf_2004_cm, sw$Circumf_2019_cm,
+        names = c("NE 2004", "NE 2019", "SW 2004","SW 2019"),
+        ylab= "Circumfrence (cm)" , xlab = "Sites and year" ,
+        main = "Growth at two different sites during 2004 and 2019")
 
 # 9. Calculate the mean growth over the past 10 years at each site.
