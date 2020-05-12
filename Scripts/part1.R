@@ -1,5 +1,3 @@
-library(dplyr)
-
 # 1. Read in the file, making the gene accession numbers the row names. 
 #    Show a table of values for the first six genes.
 
