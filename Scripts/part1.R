@@ -58,7 +58,26 @@ sd(sw$Circumf_2019_cm)
 # 8. Make a box plot of tree circumference at the start and end of the study at both sites.
 boxplot(ne$Circumf_2004_cm, ne$Circumf_2019_cm, sw$Circumf_2004_cm, sw$Circumf_2019_cm,
         names = c("NE 2004", "NE 2019", "SW 2004","SW 2019"),
-        ylab= "Circumfrence (cm)" , xlab = "Sites and year" ,
-        main = "Growth at two different sites during 2004 and 2019")
+        ylab= "Circumfrence (cm)" , xlab = "Sites and years" ,
+        main = "Growth at two different sites during 2004 and 2019", col= "green")
 
 # 9. Calculate the mean growth over the past 10 years at each site.
+
+ne$Circumf_2019_cm - ne$Circumf_2009_cm
+ne$growth <- (ne$Circumf_2019_cm - ne$Circumf_2009_cm)
+mean_growth_ne <- mean(ne$growth)
+mean_growth_ne
+
+sw$Circumf_2019_cm - sw$Circumf_2009_cm
+sw$growth <- (sw$Circumf_2019_cm - sw$Circumf_2009_cm)
+mean_growth_sw<- mean(sw$growth)
+mean_growth_sw
+
+# 10. Use the t.test and wilcox.test functions to estimate the p-value that the 10 year growth is different at the two sites.
+# t test
+t_test <- t.test(ne$growth,sw$growth)
+t_test
+
+# wilcox.test
+wilcox_test <- wilcox.test(ne$growth, sw$growth)
+wilcox_test
