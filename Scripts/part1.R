@@ -13,20 +13,17 @@ head(gene_expression_data, 6)
 
 # 3. List the 10 genes with the highest mean expression
 gene_ordered <- gene_expression_data[order(-gene_expression_data$Mean),]
-head(gene_ordered, 20)
+head(gene_ordered, 10)
 
 # 4. Determine the number of genes with a mean <10
 lessthan10 <- gene_expression_data[(gene_expression_data[,3]<10),]
 nrow(lessthan10) # 43124 genes
 
 # 5. Make a histogram plot of the mean values in png format and paste it into your report.
-hist_data <- gene_expression_data[,3]
-
-hist(hist_data, xlim = c(0, 100), ylim = c(0, 100000))
-
+hist(gene_expression_data$Mean, breaks = 5)
 
 # 6. Import this csv file into an R object.
-# What are the column names?
+#    What are the column names?
 
 growth_data <- read.csv("~/projects/SLE712-Assignment-3/Data/part1_growth_data.csv",
                         header = TRUE, stringsAsFactors = FALSE)
@@ -34,24 +31,34 @@ growth_data <- read.csv("~/projects/SLE712-Assignment-3/Data/part1_growth_data.c
 column <- colnames(growth_data)
 column
 
-# 7. Calculate the mean and standard deviation of tree circumference at the start and end of the study at both sites.
-# For northeast
+# 7. Calculate the mean and standard deviation of tree circumference at the start and end of the study 
+#    at both sites.
+
+# For Northeast
 ne <- subset(growth_data, Site=="northeast")
 head(ne)
 
+# Mean for Northeast data
 mean_end2 <- mean(ne$Circumf_2004_cm)
 mean_end1 <- mean(ne$Circumf_2019_cm)
+mean_end1
+mean_end2
 
+# Standard Deviation for Northeast data
 sd(ne$Circumf_2004_cm)
 sd(ne$Circumf_2019_cm)
 
-# For southwest
+# For Southwest
 sw <- subset(growth_data, Site == "southwest")
 head(sw)
 
+# Mean for Southwest data
 mean_start2 <- mean(sw$Circumf_2004_cm)
 mean_end2 <- mean(sw$Circumf_2019_cm)
+mean_start2
+mean_end2
 
+# Standard Deviation for Southwest data
 sd(sw$Circumf_2004_cm)
 sd(sw$Circumf_2019_cm)
 
@@ -63,17 +70,20 @@ boxplot(ne$Circumf_2004_cm, ne$Circumf_2019_cm, sw$Circumf_2004_cm, sw$Circumf_2
 
 # 9. Calculate the mean growth over the past 10 years at each site.
 
+# Mean growth for Northeast data
 ne$Circumf_2019_cm - ne$Circumf_2009_cm
 ne$growth <- (ne$Circumf_2019_cm - ne$Circumf_2009_cm)
 mean_growth_ne <- mean(ne$growth)
 mean_growth_ne
 
+# Mean growth for Southwest data
 sw$Circumf_2019_cm - sw$Circumf_2009_cm
 sw$growth <- (sw$Circumf_2019_cm - sw$Circumf_2009_cm)
 mean_growth_sw<- mean(sw$growth)
 mean_growth_sw
 
 # 10. Use the t.test and wilcox.test functions to estimate the p-value that the 10 year growth is different at the two sites.
+
 # t test
 t_test <- t.test(ne$growth,sw$growth)
 t_test

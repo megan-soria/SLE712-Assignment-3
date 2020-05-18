@@ -5,10 +5,12 @@ source("https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinf
 
 
 # 1. Download the whole set of E. coli gene DNA sequences and use gunzip to decompress. 
-R.utils::gunzip("Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz",overwrite=FALSE)
+download.file("ftp://ftp.ensemblgenomes.org/pub/bacteria/release-47/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655/cds/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz", 
+              destfile = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz")
+R.utils::gunzip("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz",overwrite=FALSE)
 
 #    Use the makeblast() function to create a blast database. 
-rBLAST::makeblastdb("Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa",dbtype="nucl", "-parse_seqids")
+rBLAST::makeblastdb("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa",dbtype="nucl", "-parse_seqids")
 
 #    How many sequences are present in the E.coli set?
 
@@ -21,13 +23,25 @@ rBLAST::makeblastdb("Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa
 # Maximum file size: 1000000000B
 # Adding sequences from FASTA; added 4140 sequences in 0.330607 seconds.
 
+
+
 # 2. Download the sample fasta sequences and read them in as above. 
 #    For your allocated sequence, determine the length (in bp) and the proportion of GC bases.
-sample_fasta <- seqinr::read.fasta("part2_ecoliGene_sample.fa")
-seqinr::getLength(sample_fasta$`11`)
+download.file("https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinfo_asst3_part2_files/sample.fa", destfile = "Data/sample.fa")
+sample_fasta <- seqinr::read.fasta("Data/sample.fa")
+
+# Subset sequence 11 
+seq11 <- sample_fasta[[11]]
+
+# Sequence length in bp
+seqinr::getLength(seq11)
 # 1497 bp
-seqinr::GC(sample_fasta$`11`)
+
+# Proportion of GC bases
+seqinr::GC(seq11)
 # 0.5744823
+
+
 
 # 3. You will be provided with R functions to create BLAST databases and perform blast searches. 
 #    Use blast to identify what E. coli gene your sequence matches best. Show a table of the top 
@@ -35,9 +49,12 @@ seqinr::GC(sample_fasta$`11`)
 
 myblastn_tab # provided R function
 
-results <- myblastn_tab(myseq = seq11, db = "Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+ecoli_seq <- seqinr::read.fasta("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+
+results <- myblastn_tab(myseq = seq11, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
 top3_hits <- results[1:3,]
 top3_hits
+
 
 # gene match for sequence 11
 seq11_match <- results[results$qseqid==11,]
@@ -47,20 +64,23 @@ seq11_match <- results[results$qseqid==11,]
 #    mismatches between the original and mutated sequence.
 
 # create a mutated copy with 100 substitutions
-seq11 <- sample_fasta$"11"
 seq11_mut <- mutator(myseq=seq11,100)
 
 # now create a pairwise alignment
-ORF3a_mut_ <- DNAString(c2s(ORF3a_mut))
-ORF3a_ <- DNAString(c2s(ORF3a))
-aln <- Biostrings::pairwiseAlignment(ORF3a_,ORF3a_mut_)
+seq11_mut_ <- DNAString(c2s(seq11_mut))
+seq11_ <- DNAString(c2s(seq11))
+aln <- Biostrings::pairwiseAlignment(seq11_,seq11_mut_)
 pid(aln)
+# 94.92318
 nmismatch(aln)
+# 76
 
-# Using the provided functions for mutating and BLASTing a sequence, determine the number 
-# and proportion of sites that need to be altered to prevent the BLAST search from matching the 
-# gene of origin. Because the mutation is random, you may need to run this test multiple times 
-# to get a reliable answer.
 
-# Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
-# the ability for BLAST to match the gene of origin. Summarise the results in 1 to 2 sentences.
+
+# 5. Using the provided functions for mutating and BLASTing a sequence, determine the number 
+#    and proportion of sites that need to be altered to prevent the BLAST search from matching the 
+#    gene of origin. Because the mutation is random, you may need to run this test multiple times 
+#    to get a reliable answer.
+
+#    Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
+#    the ability for BLAST to match the gene of origin. Summarise the results in 1 to 2 sentences.
