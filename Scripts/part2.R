@@ -55,6 +55,10 @@ results <- myblastn_tab(myseq = seq11, db = "Data/Escherichia_coli_str_k_12_subs
 top3_hits <- results[1:3,]
 top3_hits
 
+#       qseqid   sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
+# 1        11 AAC76604    100   1497        0       0      1 1497      1 1497      0     2878
+# NA       NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# NA.1     NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
 
 
 # 4. You will be provided with a function that enables you to make a set number of point mutations 
@@ -147,5 +151,5 @@ results[1:3,]
 # NULL
 # > 
  
-#    Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
+# 6. Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
 #    the ability for BLAST to match the gene of origin. Summarise the results in 1 to 2 sentences.

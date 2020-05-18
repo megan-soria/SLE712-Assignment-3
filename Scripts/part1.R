@@ -20,7 +20,9 @@ lessthan10 <- gene_expression_data[(gene_expression_data[,3]<10),]
 nrow(lessthan10) # 43124 genes
 
 # 5. Make a histogram plot of the mean values in png format and paste it into your report.
-hist(gene_expression_data$Mean, breaks = 5)
+png(filename = "Data/part1_histogram" )
+hist(gene_expression_data$Mean, breaks = 5, xlab = "Mean", main = "Histogram of Gene Expression Data Mean")
+dev.off()
 
 # 6. Import this csv file into an R object.
 #    What are the column names?
