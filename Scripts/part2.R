@@ -56,8 +56,6 @@ top3_hits <- results[1:3,]
 top3_hits
 
 
-# gene match for sequence 11
-seq11_match <- results[results$qseqid==11,]
 
 # 4. You will be provided with a function that enables you to make a set number of point mutations 
 #    to your sequence of interest. Run the function and write an R code to check the number of 
@@ -82,5 +80,72 @@ nmismatch(aln)
 #    gene of origin. Because the mutation is random, you may need to run this test multiple times 
 #    to get a reliable answer.
 
+# insert mutations
+seq11_mut_itr <- mutator(myseq=seq11,100)
+
+# insert mutations into the first mutated sequence, repeat until blast result = Null
+seq11_mut_itr <- mutator(myseq=seq11_mut_itr,100)
+results <- myblastn_tab(myseq = seq11_mut_itr, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+results[1:3,]
+
+# of iterations = 6
+# 
+# --------------- CONSOLE RESULTS -----------------
+# > # 5. Using the provided functions for mutating and BLASTing a sequence, determine the number 
+#   > #    and proportion of sites that need to be altered to prevent the BLAST search from matching the 
+#   > #    gene of origin. Because the mutation is random, you may need to run this test multiple times 
+#   > #    to get a reliable answer.
+#   > seq11_mut_itr <- mutator(myseq=seq11,100)
+# > results <- myblastn_tab(myseq = seq11_mut_itr, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+# > results[1:3,]
+# qseqid   sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
+# 1        11 AAC76604  94.99   1497       75       0      1 1497      1 1497      0     2446
+# NA       NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# NA.1     NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# > seq11_mut_itr <- mutator(myseq=seq11_mut_itr,100)
+# > results <- myblastn_tab(myseq = seq11_mut_itr, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+# > results[1:3,]
+# qseqid   sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
+# 1        11 AAC76604 90.915   1497      136       0      1 1497      1 1497      0     2094
+# NA       NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# NA.1     NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# > seq11_mut_itr <- mutator(myseq=seq11_mut_itr,100)
+# > results <- myblastn_tab(myseq = seq11_mut_itr, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+# > results[1:3,]
+# qseqid   sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
+# 1        11 AAC76604 87.099   1496      193       0      1 1496      1 1496      0     1763
+# NA       NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# NA.1     NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# > seq11_mut_itr <- mutator(myseq=seq11_mut_itr,100)
+# > results <- myblastn_tab(myseq = seq11_mut_itr, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+# > results[1:3,]
+# qseqid   sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
+# 1        11 AAC76604 83.422   1496      248       0      1 1496      1 1496      0     1446
+# NA       NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# NA.1     NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# > seq11_mut_itr <- mutator(myseq=seq11_mut_itr,100)
+# > results <- myblastn_tab(myseq = seq11_mut_itr, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+# > results[1:3,]
+# qseqid   sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
+# 1        11 AAC76604 79.479   1496      307       0      1 1496      1 1496      0     1106
+# NA       NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# NA.1     NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA     NA       NA
+# > seq11_mut_itr <- mutator(myseq=seq11_mut_itr,100)
+# > results <- myblastn_tab(myseq = seq11_mut_itr, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+# > results[1:3,]
+# qseqid   sseqid pident length mismatch gapopen qstart qend sstart send    evalue bitscore
+# 1        11 AAC76604 76.516   1039      244       0    453 1491    453 1491 7.29e-169      590
+# NA       NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA        NA       NA
+# NA.1     NA     <NA>     NA     NA       NA      NA     NA   NA     NA   NA        NA       NA
+# > seq11_mut_itr <- mutator(myseq=seq11_mut_itr,100)
+# > results <- myblastn_tab(myseq = seq11_mut_itr, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+# > results[1:3,]
+# NULL
+# > seq11_mut_itr <- mutator(myseq=seq11_mut_itr,100)
+# > results <- myblastn_tab(myseq = seq11_mut_itr, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+# > results[1:3,]
+# NULL
+# > 
+ 
 #    Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
 #    the ability for BLAST to match the gene of origin. Summarise the results in 1 to 2 sentences.
