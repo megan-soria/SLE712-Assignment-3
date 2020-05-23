@@ -1,7 +1,7 @@
 # 1. Read in the file, making the gene accession numbers the row names. 
 #    Show a table of values for the first six genes.
 
-gene_expression_data <- read.csv("~/projects/SLE712-Assignment-3/Data/part1_gene_expression.tsv", 
+gene_expression_data <- read.csv("Data/part1_gene_expression.tsv", 
                                  sep = '\t', row.names = "GeneID")
 head(gene_expression_data, n=6)
 
@@ -17,7 +17,7 @@ head(gene_ordered, 10)
 
 # 4. Determine the number of genes with a mean <10
 mean_lessthan10 <- gene_expression_data[(gene_expression_data[,3]<10),]
-nrow(lessthan10) # 43124 genes
+nrow(mean_lessthan10) # 43124 genes
 
 # 5. Make a histogram plot of the mean values in png format and paste it into your report.
 png(filename = "Data/part1_histogram.png")
