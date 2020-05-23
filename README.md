@@ -18,7 +18,7 @@ This folder should contain data files like .csv, .tsv, .fa, etc.
 
 In this folder:
 
-- A gene expression data and a groeth data for part 1 of the project taken from [Dr. Mark Ziemann's Github repository for the unit](https://github.com/markziemann/SLE712_files/tree/master/bioinfo_asst3_part1_files).
+- A gene expression data and a growth data for part 1 of the project taken from [Dr. Mark Ziemann's Github repository for the unit](https://github.com/markziemann/SLE712_files/tree/master/bioinfo_asst3_part1_files).
 
 - A sample gene sequence file for part 2 of the project taken from [Dr. Mark Ziemann's Github repository for the unit](https://github.com/markziemann/SLE712_files/tree/master/bioinfo_asst3_part2_files).
 
