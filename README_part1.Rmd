@@ -1,0 +1,175 @@
+---
+title: "Part 1 Scripts"
+author: "M.Soria & A.Dehlia"
+date: "5/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# How to use this file
+
+This file is a companion to the **part1.R** located at the Data folder of this repository. This file will give a brief description for each script together with its input and output.
+
+## Read a tab separated values (.tsv) file 
+A .tsv can be read using the function read.csv() by setting the attribute, *sep*, to the tab value seen in the code below. The *row.names* attribute takes the value of the column, GeneID, and turns into the row names of the data frome. The head() function set to n=6 shows the first 6 items in the file.
+
+
+**Input:** .tsv file <br />
+**Output:** data.frame
+
+```{r, echo=TRUE}
+gene_expression_data <- read.csv("Data/part1_gene_expression.tsv", 
+                                 sep = '\t', row.names = "GeneID")
+head(gene_expression_data, n=6)
+```
+
+## Add a new column and calculate the mean of two columns 
+The following script assigns a new column name *Mean* to the data frame *gene_expression_data*. The dollar sign ($) is used to denote that Mean is a colum of gene_expression_data and the symbol *<-* is an R syntax used to assign values to a variable. <br />
+
+The rowMeans() function takes the values of a set of columns from a data frame and calculates the mean for each row. In this script, the columns are denoted by *[,1:2]* which includes the first two columns of the data frame.
+
+**Input:** values for the new column <br />
+**Output:** data.frame (+ new column)
+
+```{r, echo=TRUE}
+gene_expression_data$Mean <- rowMeans(gene_expression_data[,1:2])
+head(gene_expression_data, 6)
+```
+
+## List the top 10 highest mean values  
+This script first orders the values in the Mean column of the data frame gene_expression_data from greatest to least (denoted by the "-" sign), and stores the ordered values in the gene_ordered variable. The head() function with the attribute, 10, displays the top ten rows with the highest mean values.
+
+
+**Input:** values from column <br />
+**Output:** data.frame
+
+```{r, echo=TRUE}
+gene_ordered <- gene_expression_data[order(-gene_expression_data$Mean),]
+head(gene_ordered, 10)
+```
+
+## Determine the number of genes with a mean less than 10 
+This script uses a conditional expression to filter out the mean values less than 10. 
+
+
+**Input:** values from column, conditional statement <br />
+**Output:** data.frame
+
+
+The nrow() function counts the number of rows that satisfies the condition. 
+
+
+**Input:** data.frame <br />
+**Output:** int
+
+```{r, echo=TRUE}
+mean_lessthan10 <- gene_expression_data[(gene_expression_data[,3]<10),]
+nrow(mean_lessthan10)
+```
+
+## Histogram plot of the mean values saved in png format
+The hist() creats a histogram for the Mean column. The argument *xlab* creates the label for x-axis and *main* creats the title of the graph. 
+
+
+**Input:** vector of values <br />
+**Output:** histogram
+
+
+```{r, echo=TRUE}
+hist(gene_expression_data$Mean, xlab = "Mean", main = "Histogram of Gene Expression Data Mean")
+```
+
+The png() creates a .png file and the argument *filename* can be used to input the filename and the location where the image is to be saved. The function dev.off() shuts down the png function, telling R that the file is finished and is ready to be saved. The plot function shoud be run in between png() and dev.off().
+
+
+The function ftable() creates a frequency table for values in a column.
+
+The function mean() calculates the mean value of a list of values.
+
+## Read comma separated values (.csv) files
+A .csv can be read using the function read.csv().
+
+
+**Input:** .csv file <br />
+**Output:** data.frame
+
+The function colnames() gets or sets the name of the column of this data.frame.
+
+**Input:** data.frame <br />
+**Output:** list of characters
+
+```{r, echo=TRUE}
+growth_data <- read.csv("~/projects/SLE712-Assignment-3/Data/part1_growth_data.csv",
+                        header = TRUE, stringsAsFactors = FALSE)
+
+column <- colnames(growth_data)
+column
+```
+
+## Calculate the standard deviation
+
+The function sd() is used to calculate the standard deviation of a list of values. 
+
+**Input:** numeric vector <br />
+**Output:** number
+
+```{r, echo=TRUE}
+ne <- subset(growth_data, Site=="northeast")
+sd(ne$Circumf_2004_cm)
+```
+
+## Make a boxplot
+
+The function boxplot() is used to create a  box-and-whisker plot from a set of values. 
+
+**Input:** data.frame or list <br />
+**Output:** boxplot
+
+```{r, echo=TRUE}
+sw <- subset(growth_data, Site == "southwest")
+boxplot(ne$Circumf_2004_cm, ne$Circumf_2019_cm, sw$Circumf_2004_cm, sw$Circumf_2019_cm,
+        names = c("NE 2004", "NE 2019", "SW 2004","SW 2019"),
+        ylab= "Circumfrence (cm)" , xlab = "Sites and years" ,
+        main = "Growth at two different sites during 2004 and 2019", col= "green")
+```
+
+## t.test and wilcox.test functions
+
+The t.test() or Student's t-Test function is used to make sample t-tests on a group of data. 
+
+**Input:** numeric vector <br />
+**Output:** List
+
+```{r, echo=TRUE}
+# Mean growth for Northeast data
+ne$Circumf_2019_cm - ne$Circumf_2009_cm
+ne$growth <- (ne$Circumf_2019_cm - ne$Circumf_2009_cm)
+
+# Mean growth for Southwest data
+sw$Circumf_2019_cm - sw$Circumf_2009_cm
+sw$growth <- (sw$Circumf_2019_cm - sw$Circumf_2009_cm)
+
+t_test <- t.test(ne$growth,sw$growth)
+t_test
+```
+
+The wilcox.test() or Wilcoxon Rank Sum and Signed Rank Tests function is used to make sample Wilcoxon on a group of data. 
+
+**Input:** numeric vector <br />
+**Output:** List
+
+```{r, echo=TRUE}
+# Mean growth for Northeast data
+ne$Circumf_2019_cm - ne$Circumf_2009_cm
+ne$growth <- (ne$Circumf_2019_cm - ne$Circumf_2009_cm)
+
+# Mean growth for Southwest data
+sw$Circumf_2019_cm - sw$Circumf_2009_cm
+sw$growth <- (sw$Circumf_2019_cm - sw$Circumf_2009_cm)
+
+wilcox_test <- wilcox.test(ne$growth, sw$growth)
+wilcox_test
+```
