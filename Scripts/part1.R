@@ -57,7 +57,7 @@ dev.off()
 # 6. Import this csv file into an R object.
 #    What are the column names?
 
-growth_data <- read.csv("~/projects/SLE712-Assignment-3/Data/part1_growth_data.csv",
+growth_data <- read.csv("Data/part1_growth_data.csv",
                         header = TRUE, stringsAsFactors = FALSE)
 
 column <- colnames(growth_data)
