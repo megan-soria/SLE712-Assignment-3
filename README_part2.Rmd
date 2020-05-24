@@ -1,0 +1,175 @@
+---
+title: "README_part2"
+author: "M.Soria & A.Dehlia"
+date: "5/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## How to use this file
+
+This file is a companion to the **part2.R** located at the Data folder of this repository. This file will give a brief description for each script together with its input and output.
+
+
+### Download a file from a URL 
+A file can de downloaded from an external URL using the function download.file(). The argument *destfile* can be used to specify the name and the destination folder to be used. 
+
+
+**Function:** download.file()<br />
+**Input:** URL, filename and/or destination folder <br />
+**Output:** downloaded file
+
+
+### Unzip a .gz file 
+The function gunzip() from the R.utils library can compress or decrompress files with *.gzip* and *.bzip2* formats. The argument *overwrite* when set to FALSE does not remove the original compressed file after decompressing.
+
+
+**Library:** R.utils<br />
+**Function:** gunzip()<br />
+**Input:** filename of compressed file<br />
+**Output:** decompressed file
+
+
+### Creating a BLAST Database 
+The makeblastdb() function from the rBLAST library creates a BLAST database from a FASTA file.
+
+
+**Library:** rBLAST<br />
+**Function:** makeblastdb()<br />
+**Input:** .fa file <br />
+**Output:** BLAST Database
+
+```{r, echo=TRUE}
+rBLAST::makeblastdb("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa",dbtype="nucl", "-parse_seqids")
+```
+
+
+### Read a FASTA file 
+The read.fasta() function from the seqinr library reads a FASTA file and creates a list object.
+
+
+**Library:** seqinr<br />
+**Function:** read.fasta()<br />
+**Input:** .fa file <br />
+**Output:** List
+
+```{r, echo=TRUE}
+sample_fasta <- seqinr::read.fasta("Data/sample.fa")
+```
+
+
+### Get the sequence length 
+The getLength() function from the seqinr library reads a sequence and returns the number of bases.
+
+
+**Library:** seqinr<br />
+**Function:** getLength()<br />
+**Input:** list <br />
+**Output:** Integer
+
+```{r, echo=TRUE}
+seq11 <- sample_fasta[[11]]
+seqinr::getLength(seq11)
+```
+
+
+### Get the fractional G and C content of nucleic acid sequence 
+The GC() function from the seqinr library sums all the *g* and *c* bases from a sequence and gives the proportion of this sum to the total number of bases in the sequence. The fraction is written in decimal form from 0.0 to 1.0.
+
+
+**Library:** seqinr<br />
+**Function:** GC()<br />
+**Input:** vector of single characters ('a', 't', 'c', 'g') <br />
+**Output:** Number
+
+```{r, echo=TRUE}
+seqinr::GC(seq11)
+```
+
+
+### Match a sequence to a BLAST database 
+The myblastn_tab() is a function written by Dr. Mark Ziemann and is used to match a sequence against a BLAST database. The function gives a data.frame that lists the specific matches to the input sequence and gives details such as percent sequence identification *(pident)* and the number of mismatches *(mismatch)* between the query sequence *(qseqid)* and the subject sequence *(sseqid)* from the BLAST database. The raw file for this function can be accessed [here](https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinfo_asst3_part2_files/mutblast_functions.R) 
+
+
+**Function:** myblastn_tab()<br />
+**Input:** R sequence <br />
+**Output:** Tabular object
+
+```{r echo=TRUE, message=FALSE, paged.print=TRUE}
+source("https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinfo_asst3_part2_files/mutblast_functions.R")
+
+results <- myblastn_tab(myseq = seq11, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+results
+```
+
+
+### Set point mutations to a sequence 
+The mutator() is a function written by Dr. Mark Ziemann and is used to set replace a DNA base with a random base. The raw file for this function can be accessed [here](https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinfo_asst3_part2_files/mutblast_functions.R) 
+
+
+**Function:** mutator()<br />
+**Input:** DNA sequence <br />
+**Output:** List of characters
+
+```{r, echo=TRUE}
+seq11_mut <- mutator(myseq=seq11,100)
+```
+
+
+### Creating a pairwise alignment and counting the number of mismatches
+To make a pairwise alignment, we must first convert the target sequence (seq11) which is a vector of characters into a string using the c2s() function. The string of characters will then be converted into a DNAString object by using the DNAString()function. Both of the studied sequences must be converted as shown in the code chunck below. 
+
+
+```{r, echo=TRUE}
+seq11_mut_ <- DNAString(c2s(seq11_mut)) # mutated sequence
+seq11_ <- DNAString(c2s(seq11)) # original sequence
+```
+
+Now that the sequence are in the appropriate DNAString class, we can now use the pairwiseAlignment() function from the Biostrings library. The subject (in this case the mutated sequence) must be the second input of the function preceeded by the pattern (in this case the original sequence) which can be a set of lists.
+
+**Library:** Biostrings<br />
+**Function:** pairwiseAlignment()<br />
+**Input:** set of strings (sequences to be aligned) <br />
+**Output:** PairwiseAlignmentsSingleSubject class 
+
+```{r, echo=TRUE}
+aln <- Biostrings::pairwiseAlignment(seq11_,seq11_mut_)
+aln
+```
+
+The resulting alignment can now be used to determine the percent sequence identification using the pid() funtion. 
+
+```{r, echo=TRUE}
+pid(aln)
+```
+
+Or determine the number of mismateches using the nmismatch() function.
+
+```{r, echo=TRUE}
+nmismatch(aln)
+```
+
+
+### Write a FASTA file 
+The write.fasta() function from the seqinr library reads a vector of single characters in the form of DNA sequences and writes it into a FASTA format.
+
+
+**Library:** seqinr<br />
+**Function:** write.fasta()<br />
+**Input:** vector of single characters <br />
+**Output:** .fa file
+
+```{r, echo=TRUE}
+write.fasta(seq11, names= "seq11", file.out = "Data/seq11.fa")
+```
+
+
+## Additional Methods to determine details of a function
+R has a built in library of decriptions for its functions. To access these descriptions, use the *?* symbol followed by the name of the function and run that within the R script or the console. The descriptions will be shown in the Help tab located by default at the lower right corner of the R environment.
+
+```{r, echo=TRUE}
+?mean 
+```
