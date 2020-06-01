@@ -173,11 +173,19 @@ while (i < 800){
 # 6. Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
 #    the ability for BLAST to match the gene of origin. Summarise the results in 1 to 2 sentences.
 
-y <- blast_test_res$Mean_blast_res
-x <- blast_test_res$num_of_mut
-X <- blast_test_res$num_of_mut/1497
+blast_test_res$sites <- blast_test_res$num_of_mut
 
+blast_test_res$prop <- blast_test_res$Mean_blast_res
 
-plot(X,y)
+blast_test_res$random <- blast_test_res$num_of_mut/1497
 
-plot(x,y)
+library("ggplot2")
+ggplot(blast_test_res, aes(sites,prop)) +
+        geom_line(color = "violet" ) + 
+        geom_point(shape=19,color="turquoise3", size= 2) + 
+        theme_bw() + labs(title="", x="Number of sites randomised",y="Proportion of successful BLASTs")
+
+ggplot(blast_test_res, aes(random,prop)) + 
+        geom_line(color = "violet" ) + 
+        geom_point(shape=19,color="turquoise3", size= 2) + 
+        theme_bw()+ labs(title="", x="Number of sites randomised",y="Proportion of successful BLASTs")
