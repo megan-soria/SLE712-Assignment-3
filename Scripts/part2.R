@@ -12,17 +12,7 @@ R.utils::gunzip("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.f
 #    Use the makeblast() function to create a blast database. 
 rBLAST::makeblastdb("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa",dbtype="nucl", "-parse_seqids")
 
-#    How many sequences are present in the E.coli set?
-
-## makeblastdb() console result
-# Building a new DB, current time: 05/10/2020 23:30:48
-# New DB name:   /mnt/student11/projects/SLE712-Assignment-3/Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa
-# New DB title:  Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa
-# Sequence type: Nucleotide
-# Keep MBits: T
-# Maximum file size: 1000000000B
-# Adding sequences from FASTA; added 4140 sequences in 0.330607 seconds.
-
+# How many sequences are present in the E.coli set? 4140 sequences
 
 
 # 2. Download the sample fasta sequences and read them in as above. 
@@ -80,10 +70,12 @@ pid(aln)
 nmismatch(aln)
 # 76
 
+
 # 5. Using the provided functions for mutating and BLASTing a sequence, determine the number 
 #    and proportion of sites that need to be altered to prevent the BLAST search from matching the 
 #    gene of origin. Because the mutation is random, you may need to run this test multiple times 
 #    to get a reliable answer.
+
 
 # Write a fasta file and make a blast db from the traget sequence, seq11
 
@@ -91,19 +83,21 @@ write.fasta(seq11, names= "seq11", file.out = "Data/seq11.fa")
 makeblastdb(file = "Data/seq11.fa", dbtype = "nucl")
 
 
-# blast_tester is a function to test the limits of a BLAST search with the following inputs
+# blast_tester is a function that tests the maximum number of mutations that can still return
+# a BLAST search match when compared to the original sequence. It takes an initial number of 
+# mutations used to mutate the original sequence, makes a BLAST search, and repeats this process in 
+# defined increments until the search returns NULL. It stores each iteration in a table with the 
+# last row as the highest number of mutations that returned a match. The following are the inputs:
 
 # init_mut      initial number of mutations
 # mut_incr      number of mutations added per iteration
-# target_seq    sequence of interest
-# blast_db      blast database you are comparing your sequence to
-#               (in this case, blast_db is made from the original sequence, seq11)
 
-blast_tester <- function(init_mut, mut_incr, target_seq, blast_db){
+
+blast_lim <- function(init_mut, mut_incr){
         # number of mutations
         mut <- init_mut  
-        seq_mut <- mutator(myseq=target_seq,mut)
-        results <- myblastn_tab(myseq = seq_mut, db = blast_db)
+        seq_mut <- mutator(myseq=seq11,mut)
+        results <- myblastn_tab(myseq = seq_mut, db = "Data/seq11.fa")
         
         # Save BLAST search results in a dataframe
         results_table <- as.data.frame(results)
@@ -114,8 +108,8 @@ blast_tester <- function(init_mut, mut_incr, target_seq, blast_db){
         while (!is.null(results)){
                 # Number of added mutations per iteration
                 mut = mut + mut_incr
-                seq_mut <- mutator(myseq=target_seq,mut)
-                results <- myblastn_tab(myseq = seq_mut, db = blast_db)
+                seq_mut <- mutator(myseq=seq11,mut)
+                results <- myblastn_tab(myseq = seq_mut, db = "Data/seq11.fa")
                 if (is.null(results)){ # Do not append the null search result to the table
                         results_table 
                 # Append search results and mutations if it is not empty
@@ -128,22 +122,57 @@ blast_tester <- function(init_mut, mut_incr, target_seq, blast_db){
 # Test the limits of BLAST search with different initial mutations 
 # and increments using the blast_tester function
 
-test1 <- blast_tester(1,1,seq11,"Data/seq11.fa")
-test2 <- blast_tester(1,5,seq11,"Data/seq11.fa")
-test3 <- blast_tester(1,10,seq11,"Data/seq11.fa") 
-test4 <- blast_tester(2,2,seq11,"Data/seq11.fa")
-test5 <- blast_tester(2,5,seq11,"Data/seq11.fa")
+test1 <- blast_lim(0,50) 
 
-# Merge all test results in one table
+
+# Merge all test results in one table and take the top 10 highest number of mutations
 
 all_tests <- rbind(test1, test2, test3, test4, test5)
+max_mut <- all_tests[order(-all_tests$num_mut),]
+head(max_mut, 10)
+
+
+# blast_tester mutates a sequence in a defined number of places ("mut").
+# If a BLAST search against the original sequence returns a match, the function returns a 1. 
+# If the search result is NULL, it returns a 0. Input:
+
+# mut   number of mutations to be applied in the sequence
+
+blast_tester <- function(mut){
+        seq_mut <- mutator(myseq=seq11,mut)
+        results <- myblastn_tab(myseq = seq_mut, db = "Data/seq11.fa")
+        if (!is.null(results)){
+                return(1)
+        } else (return(0))
+}
+
+
+# Since the mutations are random, the BLAST search results changes in each run.
+# The following code uses the results from the blast_lim function and replicates the run 
+# of the blast_tester function 100 times to get a mean value and a better grasp of the
+# BLAST search behavior
+
+
+# Create an empty data frame for blast_tester function results
+blast_test_res <- data.frame(matrix(ncol=2,nrow=0, dimnames=list(NULL, c("num_of_mut", "Mean_blast_res"))))
+
+i <- 0
+
+while (i < 800){
+        mean_blast_res <- mean(replicate(100,blast_tester(i)))
+        blast_test_res[nrow(blast_test_res) + 1,] <- c(i,mean_blast_res)
+        i <- i + 50
+}
+
 
 # 6. Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
 #    the ability for BLAST to match the gene of origin. Summarise the results in 1 to 2 sentences.
 
-x <- results_table$pident/100
-y <- results_table$mismatch/1497
+y <- blast_test_res$Mean_blast_res
+x <- blast_test_res$num_of_mut
+X <- blast_test_res$num_of_mut/1497
 
-plot(results_table$mismatch,x)
 
-plot(y,x)
+plot(X,y)
+
+plot(x,y)
