@@ -85,116 +85,58 @@ nmismatch(aln)
 #    gene of origin. Because the mutation is random, you may need to run this test multiple times 
 #    to get a reliable answer.
 
-# insert mutations
+# Write a fasta file and make a blast db from the traget sequence, seq11
 
 write.fasta(seq11, names= "seq11", file.out = "Data/seq11.fa")
 makeblastdb(file = "Data/seq11.fa", dbtype = "nucl")
 
-seq11_mut <- mutator(myseq=seq11,50)
-results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-results_table <- as.data.frame(results)
-results
 
-seq11_mut <- mutator(myseq=seq11,100)
-results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-results_table[nrow(results_table) + 1,] <- c(results)
-results
+# blast_tester is a function to test the limits of a BLAST search with the following inputs
 
-seq11_mut <- mutator(myseq=seq11,150)
-results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-results_table[nrow(results_table) + 1,] <- c(results)
-results
+# init_mut      initial number of mutations
+# mut_incr      number of mutations added per iteration
+# target_seq    sequence of interest
+# blast_db      blast database you are comparing your sequence to
+#               (in this case, blast_db is made from the original sequence, seq11)
 
-seq11_mut <- mutator(myseq = seq11,200)
-results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-results_table[nrow(results_table) + 1,] <- c(results)
-results
-
-seq11_mut <- mutator(myseq = seq11,250)
-results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-results_table[nrow(results_table) + 1,] <- c(results)
-results
-
-seq11_mut <- mutator(myseq = seq11,300)
-results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-results_table[nrow(results_table) + 1,] <- c(results)
-results
-
-seq11_mut <- mutator(myseq = seq11,325)
-results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-results_table[nrow(results_table) + 1,] <- c(results)
-results
-
-seq11_mut <- mutator(myseq = seq11,330)
-results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-results
-
-# write.fasta(seq11, names= "seq11", file.out = "Data/seq11.fa")
-# makeblastdb(file = "Data/seq11.fa", dbtype = "nucl")
+blast_tester <- function(init_mut, mut_incr, target_seq, blast_db){
+        # number of mutations
+        mut <- init_mut  
+        seq_mut <- mutator(myseq=target_seq,mut)
+        results <- myblastn_tab(myseq = seq_mut, db = blast_db)
+        
+        # Save BLAST search results in a dataframe
+        results_table <- as.data.frame(results)
+        # Insert new columnn for number of mutations  
+        results_table$num_mut <- mut
+        
+        # Keep mutating until BLAST search returns null
+        while (!is.null(results)){
+                # Number of added mutations per iteration
+                mut = mut + mut_incr
+                seq_mut <- mutator(myseq=target_seq,mut)
+                results <- myblastn_tab(myseq = seq_mut, db = blast_db)
+                if (is.null(results)){ # Do not append the null search result to the table
+                        results_table 
+                # Append search results and mutations if it is not empty
+                } else (results_table[nrow(results_table) + 1,] <- c(results,mut)) 
+        }
+        return(results_table)
+}
 
 
-# Building a new DB, current time: 05/23/2020 23:54:57
-# New DB name:   /mnt/student04/projects/SLE712-Assignment-3/Data/seq11.fa
-# New DB title:  Data/seq11.fa
-# Sequence type: Nucleotide
-# Deleted existing Nucleotide BLAST database named /mnt/student04/projects/SLE712-Assignment-3/Data/seq11.fa
-# Keep MBits: T
-# Maximum file size: 1000000000B
-# Adding sequences from FASTA; added 1 sequences in 0.000426054 seconds.
- 
-# seq11_mut <- mutator(myseq=seq11,50)
-# results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-# results_table <- as.data.frame(results)
-# results
-# qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
-# 1     11  seq11 97.328   1497       40       0      1 1497      1 1497      0     2648
- 
-# seq11_mut <- mutator(myseq=seq11,100)
-# results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-# results_table[nrow(results_table) + 1,] <- c(results)
-# results
-# qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
-# 1     11  seq11 95.124   1497       73       0      1 1497      1 1497      0     2457
- 
-# seq11_mut <- mutator(myseq=seq11,150)
-# results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-# results_table[nrow(results_table) + 1,] <- c(results)
-# results
-# qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
-# 1     11  seq11 92.575   1495      111       0      3 1497      3 1497      0     2234
- 
-# seq11_mut <- mutator(myseq = seq11,200)
-# results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-# results_table[nrow(results_table) + 1,] <- c(results)
-# results
-# qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
-# 1     11  seq11  89.98   1497      150       0      1 1497      1 1497      0     2013
- 
-# seq11_mut <- mutator(myseq = seq11,250)
-# results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-# results_table[nrow(results_table) + 1,] <- c(results)
-# results
-# qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
-# 1     11  seq11 87.976   1497      180       0      1 1497      1 1497      0     1840
- 
-# seq11_mut <- mutator(myseq = seq11,300)
-# results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-# results_table[nrow(results_table) + 1,] <- c(results)
-# results
-# qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
-# 1     11  seq11  85.34   1487      218       0      1 1487      1 1487      0     1602
- 
-# seq11_mut <- mutator(myseq = seq11,325)
-# results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-# results_table[nrow(results_table) + 1,] <- c(results)
-# results
-# qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
-# 1     11  seq11 83.949   1489      239       0      9 1497      9 1497      0     1485
- 
-# seq11_mut <- mutator(myseq = seq11,330)
-# results <- myblastn_tab(myseq = seq11_mut, db = "Data/seq11.fa")
-# results
-# NULL
+# Test the limits of BLAST search with different initial mutations 
+# and increments using the blast_tester function
+
+test1 <- blast_tester(1,1,seq11,"Data/seq11.fa")
+test2 <- blast_tester(1,5,seq11,"Data/seq11.fa")
+test3 <- blast_tester(1,10,seq11,"Data/seq11.fa") 
+test4 <- blast_tester(2,2,seq11,"Data/seq11.fa")
+test5 <- blast_tester(2,5,seq11,"Data/seq11.fa")
+
+# Merge all test results in one table
+
+all_tests <- rbind(test1, test2, test3, test4, test5)
 
 # 6. Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
 #    the ability for BLAST to match the gene of origin. Summarise the results in 1 to 2 sentences.
