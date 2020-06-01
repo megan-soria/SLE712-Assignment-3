@@ -83,7 +83,7 @@ write.fasta(seq11, names= "seq11", file.out = "Data/seq11.fa")
 makeblastdb(file = "Data/seq11.fa", dbtype = "nucl")
 
 
-# blast_tester is a function that tests the maximum number of mutations that can still return
+# blast_lim is a function that tests the maximum number of mutations that can still return
 # a BLAST search match when compared to the original sequence. It takes an initial number of 
 # mutations used to mutate the original sequence, makes a BLAST search, and repeats this process in 
 # defined increments until the search returns NULL. It stores each iteration in a table with the 
@@ -122,7 +122,11 @@ blast_lim <- function(init_mut, mut_incr){
 # Test the limits of BLAST search with different initial mutations 
 # and increments using the blast_tester function
 
-test1 <- blast_lim(0,50) 
+test1 <- blast_lim(1,1)
+test2 <- blast_lim(1,10)
+test3 <- blast_lim(1,20) 
+test4 <- blast_lim(1,30)
+test5 <- blast_lim(2,50) 
 
 
 # Merge all test results in one table and take the top 10 highest number of mutations
@@ -131,6 +135,7 @@ all_tests <- rbind(test1, test2, test3, test4, test5)
 max_mut <- all_tests[order(-all_tests$num_mut),]
 head(max_mut, 10)
 
+# ANKUSH! no explanation what the previous function is used for, say here that it's weird 450 lim
 
 # blast_tester mutates a sequence in a defined number of places ("mut").
 # If a BLAST search against the original sequence returns a match, the function returns a 1. 

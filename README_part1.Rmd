@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## How to use this file
 
-This file is a companion to the **part1.R** located at the Data folder of this repository. This file will give a brief description for each script together with its input and output.
+This file is a companion to the **part1.R** located at the Scripts folder of this repository. This file will give a brief description for each script together with its input and output.
 
 
 ### Read a tab separated values (.tsv) file 
