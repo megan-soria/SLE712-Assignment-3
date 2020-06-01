@@ -199,5 +199,9 @@ results
 # 6. Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
 #    the ability for BLAST to match the gene of origin. Summarise the results in 1 to 2 sentences.
 
-results_table$pident/100
-results_table$mismatch/1497
+x <- results_table$pident/100
+y <- results_table$mismatch/1497
+
+plot(results_table$mismatch,x)
+
+plot(y,x)
