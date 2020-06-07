@@ -95,21 +95,23 @@ sd(sw$Circumf_2004_cm)
 sd(sw$Circumf_2019_cm)
 
 # 8. Make a box plot of tree circumference at the start and end of the study at both sites.
+png(filename = "Data/part1_boxplot.png")
 boxplot(ne$Circumf_2004_cm, ne$Circumf_2019_cm, sw$Circumf_2004_cm, sw$Circumf_2019_cm,
         names = c("NE 2004", "NE 2019", "SW 2004","SW 2019"),
         ylab= "Circumfrence (cm)" , xlab = "Sites and years" ,
         main = "Growth at two different sites during 2004 and 2019", col= "green")
+dev.off()
 
 # 9. Calculate the mean growth over the past 10 years at each site.
 
 # Mean growth for Northeast data
-ne$Circumf_2019_cm - ne$Circumf_2009_cm
+
 ne$growth <- (ne$Circumf_2019_cm - ne$Circumf_2009_cm)
 mean_growth_ne <- mean(ne$growth)
 mean_growth_ne
 
 # Mean growth for Southwest data
-sw$Circumf_2019_cm - sw$Circumf_2009_cm
+
 sw$growth <- (sw$Circumf_2019_cm - sw$Circumf_2009_cm)
 mean_growth_sw<- mean(sw$growth)
 mean_growth_sw
