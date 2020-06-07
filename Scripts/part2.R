@@ -180,12 +180,16 @@ blast_test_res$prop <- blast_test_res$Mean_blast_res
 blast_test_res$random <- blast_test_res$num_of_mut/1497
 
 library("ggplot2")
+png(filename = "Data/part2_blast1.png")
 ggplot(blast_test_res, aes(sites,prop)) +
         geom_line(color = "violet" ) + 
         geom_point(shape=19,color="turquoise3", size= 2) + 
         theme_bw() + labs(title="", x="Number of sites randomised",y="Proportion of successful BLASTs")
+dev.off()
 
+png(filename = "Data/part2_blast2.png")
 ggplot(blast_test_res, aes(random,prop)) + 
         geom_line(color = "violet" ) + 
         geom_point(shape=19,color="turquoise3", size= 2) + 
         theme_bw()+ labs(title="", x="Number of sites randomised",y="Proportion of successful BLASTs")
+dev.off()
