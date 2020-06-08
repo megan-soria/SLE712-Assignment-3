@@ -15,7 +15,7 @@ This file is a companion to the **part1.R** located at the Scripts folder of thi
 
 
 ### Read a tab separated values (.tsv) file 
-A .tsv can be read using the function read.csv() by setting the attribute, *sep*, to the tab value seen in the code below. The *row.names* attribute takes the value of the column, GeneID, and turns into the row names of the data frome. The head() function set to n=6 shows the first 6 items in the file.
+A .tsv can be read using the function read.csv() by setting the attribute, *sep*, to the tab value seen in the code below. The *row.names* attribute takes the value of the column, GeneID, and turns into the row names of the data frame. The head() function set to n=6 shows the first 6 items in the file.
 
 **Function:** read.csv() <br />
 **Input:** .tsv file <br />
@@ -29,7 +29,7 @@ head(gene_expression_data, n=6)
 
 
 ### Add a new column and calculate the mean of two columns 
-The following script assigns a new column name *Mean* to the data frame *gene_expression_data*. The dollar sign ($) is used to denote that Mean is a colum of gene_expression_data and the symbol *<-* is an R syntax used to assign values to a variable. <br />
+The following script assigns a new column name *Mean* to the data frame *gene_expression_data*. The dollar sign ($) is used to denote that Mean is a column of gene_expression_data and the symbol *<-* is an R syntax used to assign values to a variable. <br />
 
 The rowMeans() function takes the values of a set of columns from a data frame and calculates the mean for each row. In this script, the columns are denoted by *[,1:2]* which includes the first two columns of the data frame.
 
@@ -79,7 +79,7 @@ nrow(mean_lessthan10)
 
 
 ### Make a histogram plot of the mean values saved in png format
-The hist() function creates a histogram for the Mean column. The argument *xlab* creates the label for x-axis and *main* creats the title of the graph. 
+The hist() function creates a histogram for the Mean column. The argument *xlab* creates the label for x-axis and *main* creates the title of the graph. 
 
 
 **Function:** hist()<br />
@@ -91,7 +91,7 @@ The hist() function creates a histogram for the Mean column. The argument *xlab*
 hist(gene_expression_data$Mean, xlab = "Mean", main = "Histogram of Gene Expression Data Mean")
 ```
 
-The png() creates a .png file and the argument *filename* can be used to input the filename and the location where the image is to be saved. The function dev.off() shuts down the png function, telling R that the file is finished and is ready to be saved. The plot function shoud be run in between png() and dev.off().
+The png() creates a .png file and the argument *filename* can be used to input the filename and the location where the image is to be saved. The function dev.off() shuts down the png function, telling R that the file is finished and is ready to be saved. The plot function should be run in between png() and dev.off().
 
 
 The function ftable() creates a frequency table for values in a column.
@@ -198,7 +198,7 @@ wilcox_test
 
 
 ## Additional Methods to determine details of a function
-R has a built in library of decriptions for its functions. To access these descriptions, use the *?* symbol followed by the name of the function and run that within the R script or the console. The descriptions will be shown in the Help tab located by default at the lower right corner of the R environment.
+R has a built in library of descriptions for its functions. To access these descriptions, use the *?* symbol followed by the name of the function and run that within the R script or the console. The descriptions will be shown in the Help tab located by default at the lower right corner of the R environment.
 
 ```{r, echo=TRUE}
 ?mean 
