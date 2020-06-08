@@ -15,7 +15,7 @@ This file is a companion to the **part2.R** located at the Data folder of this r
 
 
 ### Download a file from a URL 
-A file can de downloaded from an external URL using the function download.file(). The argument *destfile* can be used to specify the name and the destination folder to be used. 
+A file can be downloaded from an external URL using the function download.file(). The argument *destfile* can be used to specify the name and the destination folder to be used. 
 
 
 **Function:** download.file()<br />
@@ -24,7 +24,7 @@ A file can de downloaded from an external URL using the function download.file()
 
 
 ### Unzip a .gz file 
-The function gunzip() from the R.utils library can compress or decrompress files with *.gzip* and *.bzip2* formats. The argument *overwrite* when set to FALSE does not remove the original compressed file after decompressing.
+The function gunzip() from the R.utils library can compress or decompress files with *.gzip* and *.bzip2* formats. The argument *overwrite* when set to FALSE does not remove the original compressed file after decompressing.
 
 
 **Library:** R.utils<br />
@@ -120,7 +120,7 @@ seq11_mut <- mutator(myseq=seq11,100)
 
 
 ### Creating a pairwise alignment and counting the number of mismatches
-To make a pairwise alignment, we must first convert the target sequence (seq11) which is a vector of characters into a string using the c2s() function. The string of characters will then be converted into a DNAString object by using the DNAString()function. Both of the studied sequences must be converted as shown in the code chunck below. 
+To make a pairwise alignment, we must first convert the target sequence (seq11) which is a vector of characters into a string using the c2s() function. The string of characters will then be converted into a DNAString object by using the DNAString()function. Both of the studied sequences must be converted as shown in the code chunk below. 
 
 
 ```{r, echo=TRUE}
@@ -128,7 +128,7 @@ seq11_mut_ <- DNAString(c2s(seq11_mut)) # mutated sequence
 seq11_ <- DNAString(c2s(seq11)) # original sequence
 ```
 
-Now that the sequence are in the appropriate DNAString class, we can now use the pairwiseAlignment() function from the Biostrings library. The subject (in this case the mutated sequence) must be the second input of the function preceeded by the pattern (in this case the original sequence) which can be a set of lists.
+Now that the sequence are in the appropriate DNAString class, we can now use the pairwiseAlignment() function from the Biostrings library. The subject (in this case the mutated sequence) must be the second input of the function preceded by the pattern (in this case the original sequence) which can be a set of lists.
 
 **Library:** Biostrings<br />
 **Function:** pairwiseAlignment()<br />
@@ -140,13 +140,13 @@ aln <- Biostrings::pairwiseAlignment(seq11_,seq11_mut_)
 aln
 ```
 
-The resulting alignment can now be used to determine the percent sequence identification using the pid() funtion. 
+The resulting alignment can now be used to determine the percent sequence identification using the pid() function. 
 
 ```{r, echo=TRUE}
 pid(aln)
 ```
 
-Or determine the number of mismateches using the nmismatch() function.
+Or determine the number of mismatches using the nmismatch() function.
 
 ```{r, echo=TRUE}
 nmismatch(aln)
@@ -167,8 +167,17 @@ write.fasta(seq11, names= "seq11", file.out = "Data/seq11.fa")
 ```
 
 
+### Determining the limit of BLAST
+The blast_lim is a function that tests the maximum number of mutations that can still return a BLAST search match when compared to the original sequence. It takes an initial number of mutations used to mutate the original sequence, makes a BLAST search, and repeats this process in defined increments until the search returns NULL. It stores each iteration in a table with the last row as the highest number of mutations that returned a match.
+
+
+**Function:** blast_lim <br />
+**Input:** init_mut (initial number of mutations) and mut_incr (number of mutations added per iteration) <br />
+**Output:**
+
+
 ## Additional Methods to determine details of a function
-R has a built in library of decriptions for its functions. To access these descriptions, use the *?* symbol followed by the name of the function and run that within the R script or the console. The descriptions will be shown in the Help tab located by default at the lower right corner of the R environment.
+R has a built in library of descriptions for its functions. To access these descriptions, use the *?* symbol followed by the name of the function and run that within the R script or the console. The descriptions will be shown in the Help tab located by default at the lower right corner of the R environment.
 
 ```{r, echo=TRUE}
 ?mean 
