@@ -1,6 +1,7 @@
 library("seqinr")
 library("R.utils")
 library("rBLAST")
+library("ggplot2")
 source("https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinfo_asst3_part2_files/mutblast_functions.R")
 
 
@@ -89,8 +90,8 @@ makeblastdb(file = "Data/seq11.fa", dbtype = "nucl")
 # defined increments until the search returns NULL. It stores each iteration in a table with the 
 # last row as the highest number of mutations that returned a match. The following are the inputs:
 
-# init_mut      initial number of mutations
-# mut_incr      number of mutations added per iteration
+# init_mut      initial number of mutations (whole number)
+# mut_incr      number of mutations added per iteration (whole number)
 
 
 blast_lim <- function(init_mut, mut_incr){
@@ -139,7 +140,7 @@ head(max_mut, 10)
 # If a BLAST search against the original sequence returns a match, the function returns a 1. 
 # If the search result is NULL, it returns a 0. Input:
 
-# mut   number of mutations to be applied in the sequence
+# mut   number of mutations to be applied in the sequence (whole number)
 
 blast_tester <- function(mut){
         seq_mut <- mutator(myseq=seq11,mut)
@@ -177,17 +178,19 @@ blast_test_res$prop <- blast_test_res$Mean_blast_res
 
 blast_test_res$random <- blast_test_res$num_of_mut/1497
 
-library("ggplot2")
 png(filename = "Data/part2_blast1.png")
 ggplot(blast_test_res, aes(sites,prop)) +
         geom_line(color = "violet", size = 1 ) + 
         geom_point(shape=19,color="turquoise3", size= 3) + 
-        theme_bw() + labs(title="100 iterations, using sequence number 11", x="Number of sites randomised",y="Proportion of successful BLASTs")
+        theme_bw() + labs(title="Effect of Increasing Random Base Mutations to BLAST Peformance (100 iterations, using Sequence 11)", 
+                          x="Number of sites randomised",
+                          y="Proportion of successful BLASTs") + theme(plot.title = element_text(hjust = 0.5))
 dev.off()
 
 png(filename = "Data/part2_blast2.png")
 ggplot(blast_test_res, aes(random,prop)) + 
         geom_line(color = "violet", size = 1 ) + 
         geom_point(shape=19,color="turquoise3", size= 3) + 
-        theme_bw()+ labs(title="100 iterations, using sequence number 11", x="Number of sites randomised",y="Proportion of successful BLASTs")
+        theme_bw()+ labs(title="Effect of Increasing Proportion of Base Mutations to BLAST Peformance (100 iterations, using Sequence 11)", x="Number of sites randomised",
+                         y="Proportion of successful BLASTs") + theme(plot.title = element_text(hjust = 0.5))
 dev.off()

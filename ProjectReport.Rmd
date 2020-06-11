@@ -1,5 +1,7 @@
 ---
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 <style>
@@ -11,17 +13,21 @@ text-align: justify}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Table of Contents
+## Table of Contents
 >
 1. [Introduction](#introduction) <br>
 1.1 [Background (Bioinformatics)](#background-bioinformatics)<br>
 1.2 [Project Details](#project-details)
 2. [Part 1](#part-1) <br>
-2.1 [Overview](#overview) <br>
-2.2 [Written Answers](#written-answers)
-3. [Part 2](#part-2)
+2.1 [Overview (1)](#overview-1) <br>
+2.2 [Written Answers (1)](#written-answers-1)
+3. [Part 2](#part-2)<br>
+3.1 [Overview (2)](#overview-2)<br>
+3.2 [Prerequisite Libraries and Sources](#prerequisite-libraries-and-sources)<br>
+3.3 [Written Answers (2)](#written-answers-2)
+4. [References](#references)
 
-<br><br><br>
+<br><br>
 
 ## 1. Introduction
 
@@ -34,19 +40,20 @@ R has several advantages over other programming languages which include open sou
 
 ### 1.2 Project Details
 
-<font size="4"> **Github repository**: https://github.com/megan0012/SLE712-Assignment-3.git </font size>
+<font size="4"> **Github repository**: <br>
+https://github.com/megan0012/SLE712-Assignment-3.git </font size>
 
 ## 2. Part 1
 
-### 2.1 Overview 
+### 2.1 Overview (1)
 
 <font size="4">
-Importing files, data wrangling, mathematical operations, plots and saving code on GitHub <br>
+The project entails importing files, data wrangling, mathematical operations, plots and saving code on GitHub. <br>
 The file “gene_expression.tsv” contains RNA-seq count data for two samples of interest.<br>
 The file “growth_data.csv” contains measurements for tree circumference growing at two sites, control site and treatment site which were planted 20 years ago.
 </font size>
 
-### 2.2 Written Answers
+### 2.2 Written Answers (1)
 
 <font size="4">
 **Que 1:** Read in the file, making the gene accession numbers the row names. Show a table of values for the first six genes. <br>
@@ -226,7 +233,7 @@ wilcox_test
 ```
 
 ## 3. Part 2
-### 3.1 Overview
+### 3.1 Overview (2)
 <font size="4">
 **Determine the limits of BLAST**
 <br><br>
@@ -236,27 +243,28 @@ ftp://ftp.ensemblgenomes.org/pub/bacteria/release-42/fasta/bacteria_0_collection
 <br>was also used to create a blast database.
 </font size>
 
-### 3.2 Prerequisite Libraries and sources
+### 3.2 Prerequisite Libraries and Sources
 <font size="4">
-Three R packages were used in part 2 of the project. `seqinr` is used to analyze sequence data. `R.utils` is used to extract compressed files. `rBLAST` is used as an interface to run BLAST searches. <br>
+Three R packages were used in part 2 of the project. `seqinr` is used to analyze sequence data. `R.utils` is used to extract compressed files. `rBLAST` is used as an interface to run BLAST searches. `ggplot2` is used to create and customize plots. <br>
 Two funtions were also used, found in the "source", authored by Dr. Mark Ziemann.
 </font size>
-```{r,libs}
+```{r}
 library("seqinr")
 library("R.utils")
 library("rBLAST")
+library("ggplot2")
 source("https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinfo_asst3_part2_files/mutblast_functions.R")
 ```
 
 
-### 3.3 Written answers
+### 3.3 Written answers (2)
 
 <font size="4">
 **Que 1:** Download the whole set of E. coli gene DNA sequences and use gunzip to decompress. Use the makeblast() function to create a blast database. How many sequences are present in the E.coli set? <br>
 **Ans 1:** The whole set of E. coli gene DNA sequence was downloaded using the function download.file(). Inside the function, the argument “destfile” can be used to specify the name and the destination folder to be used. To compress or decompress files with “.gzip” and “.bzip2” formats, the function gunzip() from the R.utils library can be used. The argument “overwrite” when set to FALSE does not remove the original compressed file after decompressing. Further, the makeblastdb() function from the rBLAST library was used to creates a BLAST database from a FASTA file. There were 4140 sequences present in the E. coli set. 
 </font size>
 
-```{r echo=TRUE}
+```{r eval=FALSE, include=FALSE}
 download.file("ftp://ftp.ensemblgenomes.org/pub/bacteria/release-47/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655/cds/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz", destfile = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz")
 
 R.utils::gunzip("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz",overwrite=FALSE)
@@ -279,11 +287,9 @@ seq11 <- sample_fasta[[11]]
 
 # Sequence length in bp
 seqinr::getLength(seq11)
-# 1497 bp
 
 # Proportion of GC bases
 seqinr::GC(seq11)
-# 0.5744823
 ```
 
 <br><br>
@@ -327,25 +333,143 @@ nmismatch(aln)
 <br><br>
 <font size="4">
 **Que 5:** Using the provided functions for mutating and BLASTing a sequence, determine the number and proportion of sites that need to be altered to prevent the BLAST search from matching the gene of origin. Because the mutation is random, you may need to run this test multiple times to get a reliable answer.<br>
-**Ans 5:**
+**Ans 5:** Two functions were created to answer this question. The first function `blast_lim` takes a sequence, mutates it using an initial (whole number) input, and increments the number of mutations in a new iteration until the search gives a null result. This function was used in five diffrent tests using different initial mutations and increments. The results of all five tests were stored in a table. The top 10 highest number of mutation were subsetted. The values changes slightly for each run but the highest value is approximately under 400 mutations. 
 </font size>
 
 ```{r echo=TRUE}
+# Write a fasta file and make a blast db from the traget sequence, seq11
 
+write.fasta(seq11, names= "seq11", file.out = "Data/seq11.fa")
+makeblastdb(file = "Data/seq11.fa", dbtype = "nucl")
+
+
+# blast_lim is a function that tests the maximum number of mutations that can still return
+# a BLAST search match when compared to the original sequence. It takes an initial number of 
+# mutations used to mutate the original sequence, makes a BLAST search, and repeats this process in 
+# defined increments until the search returns NULL. It stores each iteration in a table with the 
+# last row as the highest number of mutations that returned a match. The following are the inputs:
+
+# init_mut      initial number of mutations (whole number)
+# mut_incr      number of mutations added per iteration (whole number)
+
+
+blast_lim <- function(init_mut, mut_incr){
+        # number of mutations
+        mut <- init_mut  
+        seq_mut <- mutator(myseq=seq11,mut)
+        results <- myblastn_tab(myseq = seq_mut, db = "Data/seq11.fa")
+        
+        # Save BLAST search results in a dataframe
+        results_table <- as.data.frame(results)
+        # Insert new columnn for number of mutations  
+        results_table$num_mut <- mut
+        
+        # Keep mutating until BLAST search returns null
+        while (!is.null(results)){
+                # Number of added mutations per iteration
+                mut = mut + mut_incr
+                seq_mut <- mutator(myseq=seq11,mut)
+                results <- myblastn_tab(myseq = seq_mut, db = "Data/seq11.fa")
+                if (is.null(results)){ # Do not append the null search result to the table
+                        results_table 
+                # Append search results and mutations if it is not empty
+                } else (results_table[nrow(results_table) + 1,] <- c(results,mut)) 
+        }
+        return(results_table)
+}
+
+
+# Test the limits of BLAST search with different initial mutations 
+# and increments using the blast_tester function
+
+test1 <- blast_lim(1,1)
+test2 <- blast_lim(1,10)
+test3 <- blast_lim(1,20) 
+test4 <- blast_lim(1,30)
+test5 <- blast_lim(2,50) 
+
+
+# Merge all test results in one table and take the top 10 highest number of mutations
+
+all_tests <- rbind(test1, test2, test3, test4, test5)
+max_mut <- all_tests[order(-all_tests$num_mut),]
+head(max_mut, 10)
 ```
 
 <br><br>
 <font size="4">
-**Que 6:** Provide a chart or table that shows how the increasing proportion of mutated bases reduces the ability for BLAST to match the gene of origin. Summarize the results in 1 to 2 sentences.
-**Ans 6:**
+A second approach was made using the second function, `blast_tester`, which takes an whole number as input as the number of mutations to be applied in the sequence. The function returns 1 if the search returns a result and a 0 if the search returns NULL. To account for randomness, this function is replicated 100 times and an average of the 1's and 0's to quantify the proportion of successful BLASTs. A while loop was used with an indicated an upper limit for the number of mutations (**800**). A fix interval of 50 was chosen to hasten the runtime of the function.
+<br><br>
+It can be noted that the initial suspected limit of **400** using the first function was incorrect. This is because the randomness factor was not taken into account. This was corrected by using 100 replications in the second approach.
 </font size>
 
 ```{r echo=TRUE}
+# blast_tester mutates a sequence in a defined number of places ("mut").
+# If a BLAST search against the original sequence returns a match, the function returns a 1. 
+# If the search result is NULL, it returns a 0. Input:
 
+# mut   number of mutations to be applied in the sequence (whole number)
+
+blast_tester <- function(mut){
+        seq_mut <- mutator(myseq=seq11,mut)
+        results <- myblastn_tab(myseq = seq_mut, db = "Data/seq11.fa")
+        if (!is.null(results)){
+                return(1)
+        } else (return(0))
+}
+
+
+# Since the mutations are random, the BLAST search results changes in each run.
+# The following code uses the results from the blast_lim function and replicates the run 
+# of the blast_tester function 100 times to get a mean value and a better grasp of the
+# BLAST search behavior
+
+
+# Create an empty data frame for blast_tester function results
+blast_test_res <- data.frame(matrix(ncol=2,nrow=0, dimnames=list(NULL, c("num_of_mut", "Mean_blast_res"))))
+
+i <- 0
+
+while (i < 800){
+        mean_blast_res <- mean(replicate(100,blast_tester(i)))
+        blast_test_res[nrow(blast_test_res) + 1,] <- c(i,mean_blast_res)
+        i <- i + 50
+}
+blast_test_res
 ```
 
-## References
+<br><br>
+<font size="4">
+**Que 6:** Provide a chart or table that shows how the increasing proportion of mutated bases reduces the ability for BLAST to match the gene of origin. Summarize the results in 1 to 2 sentences. <br>
+**Ans 6:** For a sequence of 1497 bp, less than 43.42% or 650 maximum mutations are allowable to conduct a successful BLAST search. Mutations equal to or more than this number will yield a null result and can be concluded as the limit of a BLAST search.
+</font size>
 
+```{r echo=TRUE, fig.align="center"}
+blast_test_res$sites <- blast_test_res$num_of_mut
+
+blast_test_res$prop <- blast_test_res$Mean_blast_res
+
+blast_test_res$random <- blast_test_res$num_of_mut/1497
+
+ggplot(blast_test_res, aes(sites,prop)) +
+        geom_line(color = "violet", size = 1 ) + 
+        geom_point(shape=19,color="turquoise3", size= 3) + 
+        theme_bw() + labs(title="Effect of Increasing Random Base Mutations to BLAST Peformance (100 iterations, 
+                          using Sequence 11)", 
+                          x="Number of sites randomised",
+                          y="Proportion of successful BLASTs") + theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(blast_test_res, aes(random,prop)) + 
+        geom_line(color = "violet", size = 1 ) + 
+        geom_point(shape=19,color="turquoise3", size= 3) + 
+        theme_bw()+ labs(title="Effect of Increasing Proportion of Base Mutations to BLAST Peformance (100 iterations, using
+                         Sequence 11)", x="Number of sites randomised",
+                         y="Proportion of successful BLASTs") + theme(plot.title = element_text(hjust = 0.5))
+```
+<br><br>
+
+## 4. References
+<br>
 Ayyildiz, D & Piazza, S 2019, 'Introduction to Bioinformatics', Methods Mol Biol, vol. 1986, pp. 1-15.
 
 Bonnal, RJP, Yates, A, Goto, N, Gautier, L, Willis, S, Fields, C, Katayama, T & Prins, P 2019, 'Sharing Programming Resources Between Bio* Projects', Methods Mol Biol, vol. 1910, pp. 747-66.
