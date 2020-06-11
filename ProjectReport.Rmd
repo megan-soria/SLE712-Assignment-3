@@ -1,0 +1,356 @@
+---
+output: html_document
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Table of Contents
+>
+1. [Introduction](#introduction) <br>
+1.1 [Background (Bioinformatics)](#background-bioinformatics)<br>
+1.2 [Project Details](#project-details)
+2. [Part 1](#part-1) <br>
+2.1 [Overview](#overview) <br>
+2.2 [Written Answers](#written-answers)
+3. [Part 2](#part-2)
+
+<br><br><br>
+
+## 1. Introduction
+
+### 1.1 Background (Bioinformatics)
+
+<font size="4"> Bioinformatics or computational biology is a branch of science that integrates biology and computer sciences. This interdisciplinary field is highly effective to analyze biological data using cutting-edge technology such as artificial intelligence, medical imaging, and genetic algorithm (Khan 2018). Moreover, it is used for statistical modeling, DNA sequence analysis, and gene expression analysis (Ayyildiz & Piazza 2019). Computer programming plays a vital role to interpret data and aids to process biological information. There many programming languages like Python, R, Java, Perl which are used by bioinformaticians (Bonnal et al. 2019). Among them, R is widely exploited for robust scripting.
+<br><br>
+R has several advantages over other programming languages which include open source, excellent visualization, vast package list, and wide syntax (Chan 2018). R can be run on Rstudio which is an integrated development environment (IDE) and free software. Rstudio can work on Mac, Windows and Linux operating systems or it can be operated online through the Rstudio cloud. One of the key features of the Rstudio is to work with projects that can be version controlled through git. Git track changes while working in a group and establishes coordination between programmers. Accessing a code through Github is a proficient way for software development and data mining. The aim of the practical is to develop skills in problem-solving, R coding, work together as a team using Rstudio and GitHub.
+</font size>
+
+### 1.2 Project Details
+
+<font size="4"> **Github repository**: https://github.com/megan0012/SLE712-Assignment-3.git </font size>
+
+## 2. Part 1
+
+### 2.1 Overview 
+
+<font size="4">
+Importing files, data wrangling, mathematical operations, plots and saving code on GitHub <br>
+The file “gene_expression.tsv” contains RNA-seq count data for two samples of interest.<br>
+The file “growth_data.csv” contains measurements for tree circumference growing at two sites, control site and treatment site which were planted 20 years ago.
+</font size>
+
+### 2.2 Written Answers
+
+<font size="4">
+**Que 1:** Read in the file, making the gene accession numbers the row names. Show a table of values for the first six genes. <br>
+**Ans 1:** The function read.csv() is used to read the file which is assigned to gene_expression_data. Inside the function read.csv, the gene accession numbers are designated as GeneID using an attribute row.names. Finally, the values of the first six genes are shown using the head() function and assigning n to 6.
+</font size>
+
+```{r echo=TRUE}
+gene_expression_data <- read.csv("Data/part1_gene_expression.tsv", 
+                                 sep = '\t', row.names = "GeneID")
+head(gene_expression_data, n=6)
+```
+
+<br><br>
+<font size="4">
+**Que 2:** Make a new column which is the mean of the other columns. Show a table of values for the first six genes.
+**Ans 2:** The new column for mean is created by using rowMeans() function which is assigned to gene_expression_data$Mean. $Mean with gene_expression_data adds a new column to the data. To show a table of values for the first six genes, head() function is applied with the attribute, 6.
+</font size>
+
+```{r echo=TRUE}
+gene_expression_data$Mean <- rowMeans(gene_expression_data[,1:2])
+head(gene_expression_data, 6)
+```
+
+<br><br>
+<font size="4">
+**Que 3:** List the 10 genes with the highest mean expression. <br>
+**Ans 3:** The order() function is applied to return data in ascending order. To get the highest mean expression, “-” is applied to gene_expression_data$Mean, which arranges the mean values from higher to lower. Additionally, the head() function is applied with attribute 10.
+</font size>
+
+```{r echo=TRUE}
+gene_ordered <- gene_expression_data[order(-gene_expression_data$Mean),]
+head(gene_ordered, 10)
+```
+
+<br><br>
+<font size="4">
+**Que 4:** Determine the number of genes with a mean <10. <br>
+**Ans 4:** The number of genes with a mean <10 were 43124. These were obtained by sub-setting gene_expression_data and taking the values of the mean using [,3]. By using function nrow(), the number of genes with a mean <10 was obtained.
+</font size>
+
+```{r echo=TRUE}
+mean_lessthan10 <- gene_expression_data[(gene_expression_data[,3]<10),]
+nrow(mean_lessthan10)
+```
+
+<br><br>
+<font size="4">
+**Que 5:** Make a histogram plot of the mean values in png format and paste it into your report. <br>
+**Ans 5:** The histogram for the mean values was plotted using the function hist(). The argument xlab is used to label the x-axis and the main is used to create the title of the plot. In the histogram, the frequency is skewed to the right and does not give a proper picture of the data (Figure 1). </font size>
+
+```{r echo=TRUE, fig.align="center"}
+hist(gene_expression_data$Mean, xlab = "Mean", main = "Histogram of Gene Expression Data Mean")
+```
+<center> **Figure 1** Gene Mean Values Histogram. The histogram for the Mean column produced only one bar graph near Mean = zero. This shows that the number of genes with mean  =0 and mean < 500 far exceeds the number of genes with, approximately mean =< 500. The frequency is skewed to the right and does not give us a proper picture of the data.</center>
+
+<br><br>
+<font size="4">
+Therefore, the sub-setting of the mean column was done and the extremes were taken out. 
+However, before sub-setting, data were inspected and the ftable() function was used to give the numerical data of the mean frequencies. The results obtained showed that the mean of the column was approximately 360, hence, extremes were removed which was less than 360 and greater than 2 (Figure 2). The images were saved as png format using the function png(). The png() creates a .png file and the argument filename can be used to input the filename and the location where the image is to be saved. The function dev.off() shuts down the png function, telling R that the file is finished and is ready to be saved. The plot function should be run in between png() and dev.off().
+</font size>
+
+```{r include=FALSE}
+ftable(gene_expression_data$Mean)
+
+# -----Console Result-----
+#     0   0.5     1   1.5     2   2.5     3   3.5     4   4.5     5
+# 29694  4269  2130  1392   976   766   586   517   388   367   298
+
+mean(gene_expression_data$Mean) # column mean = 354.5272
+```
+
+```{r echo=TRUE, fig.align="center"}
+with(gene_expression_data, hist
+     (Mean[Mean>2 & Mean<360], breaks=seq(2,360,by=1), 
+                                xlab = "Mean", main = "Histogram of Gene Expression Data Mean>2 & Mean<360"))
+```
+<center> **Figure 2** Gene Mean Values Histogram with subsetted data. Upon removal of extreme values, a different picture of the data is reflected in the histogram.</center>
+
+<br><br>
+<font size="4">
+**Que 6:** Import this “growth_data.csv” csv file into an R object. What are the column names?<br>
+**Ans 6:** To import a csv file, the function read.csv() is used which is assigned to growth_data. Inside the function, the header is taken as TRUE, which means the first row contains the column names. Moreover, attribute stringsAsFactors is assigned as FALSE, so that strings in the data cannot be considered as factors. When the function colnames() is applied to growth_data, it returns the names of the column. 
+</font size>
+
+```{r echo=TRUE}
+growth_data <- read.csv("Data/part1_growth_data.csv",
+                        header = TRUE, stringsAsFactors = FALSE)
+
+column <- colnames(growth_data)
+column
+```
+
+<br><br>
+<font size="4">
+**Que 7:** Calculate the mean and standard deviation of tree circumference at the start and end of the study at both sites.<br>
+**Ans 7:** To calculate the mean and standard deviation of tree circumference, mean() and sd() functions were applied, respectively. However, before calculating mean and standard deviation, the sub-setting of each site was performed. Sub-setting can be done by using the function subset(). The mean for the Northeast site at the start and the end of the study were calculated as 5.078 cm and 40.052 cm, respectively, while mean for the Southwest site at the start and the end of the study were calculated as 5.08 cm and 59.77 cm, respectively. The standard deviation for the Northeast site at the start and the end of the study were estimated as 1.06 and 16.90, respectively, while the standard deviation for the Southwest site at the start and the end of the study were calculated as 1.06 and 22.57, respectively.
+
+</font size>
+
+```{r echo=TRUE}
+# For Northeast
+ne <- subset(growth_data, Site=="northeast")
+head(ne)
+
+# Mean for Northeast data
+mean_end2 <- mean(ne$Circumf_2004_cm)
+mean_end1 <- mean(ne$Circumf_2019_cm)
+mean_end1
+mean_end2
+
+# Standard Deviation for Northeast data
+sd(ne$Circumf_2004_cm)
+sd(ne$Circumf_2019_cm)
+
+# For Southwest
+sw <- subset(growth_data, Site == "southwest")
+head(sw)
+
+# Mean for Southwest data
+mean_start2 <- mean(sw$Circumf_2004_cm)
+mean_end2 <- mean(sw$Circumf_2019_cm)
+mean_start2
+mean_end2
+
+# Standard Deviation for Southwest data
+sd(sw$Circumf_2004_cm)
+sd(sw$Circumf_2019_cm)
+```
+
+<br><br>
+<font size="4">
+**Que 8:** Make a box plot of tree circumference at the start and end of the study at both sites.<br>
+**Ans 8:** To make a boxplot from a set of values, the function boxplot() was applied. Arguments like names, ylab, and xlab were used to give names to each boxplot, label to the y-axis and x-axis, respectively. Furthermore, the attribute main was used to give a title to the plot and the col attribute was used to give color to the plots.
+</font size>
+
+```{r echo=TRUE, fig.align="center"}
+boxplot(ne$Circumf_2004_cm, ne$Circumf_2019_cm, sw$Circumf_2004_cm, sw$Circumf_2019_cm,
+        names = c("NE 2004", "NE 2019", "SW 2004","SW 2019"),
+        ylab= "Circumfrence (cm)" , xlab = "Sites and years" ,
+        main = "Growth at two different sites during 2004 and 2019", col= "green")
+```
+<center> **Figure 3** Box plot for tree circumference.</center>
+<br><br>
+<font size="4">
+**Que 9:** Calculate the mean growth over the past 10 years at each site.<br>
+**Ans 9:** The mean growth over the past 10 years was calculated by subtracting the values of the circumference of trees in 2019 from the circumference of trees in 2009. Further, these values are assigned to a vector such as ne$growth and using the function mean(), the mean of the growth over the past 10 years were calculated. The mean growth for the Northeast site was calculated as 30.06 cm, while the mean growth for the Southwest site was estimated as 48.35 cm.
+</font size>
+
+```{r echo=TRUE}
+# Mean growth for Northeast data
+
+ne$growth <- (ne$Circumf_2019_cm - ne$Circumf_2009_cm)
+mean_growth_ne <- mean(ne$growth)
+mean_growth_ne
+
+# Mean growth for Southwest data
+
+sw$growth <- (sw$Circumf_2019_cm - sw$Circumf_2009_cm)
+mean_growth_sw<- mean(sw$growth)
+mean_growth_sw
+```
+
+<br><br>
+<font size="4">
+**Que 10:** Use the t.test and wilcox.test functions to estimate the p-value that the 10 year growth is different at the two sites. <br>
+**Ans 10:** T-test was performed to estimate the p-value by using the t.test() function. The p-value for the 10 year growth difference between the two site was calculated as 1.713e-06 which is equivalent to 0.000001713. For the Wilcox test, the function wilcox.test() was used. The p-value obtained through the Wilcox test was estimated as 4.626e-06 which is equivalent to 0.000004626.
+</font size>
+
+```{r echo=TRUE}
+# t test
+t_test <- t.test(ne$growth,sw$growth)
+t_test
+
+# wilcox.test
+wilcox_test <- wilcox.test(ne$growth, sw$growth)
+wilcox_test
+```
+
+## 3. Part 2
+### 3.1 Overview
+<font size="4">
+**Determine the limits of BLAST**
+<br><br>
+In this part of the project, supplied functions were used to perform an analysis into the limits of BLAST. An E. coli gene sequence found in the file:<br> https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinfo_asst3_part2_files/sample.fa 
+<br>was allocated and Sequence 11 was used. A whole set of E. coli genes found in:<br>
+ftp://ftp.ensemblgenomes.org/pub/bacteria/release-42/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655/cds/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz
+<br>was also used to create a blast database.
+</font size>
+
+### 3.2 Prerequisite Libraries and sources
+<font size="4">
+Three R packages were used in part 2 of the project. `seqinr` is used to analyze sequence data. `R.utils` is used to extract compressed files. `rBLAST` is used as an interface to run BLAST searches. <br>
+Two funtions were also used, found in the "source", authored by Dr. Mark Ziemann.
+</font size>
+```{r,libs}
+library("seqinr")
+library("R.utils")
+library("rBLAST")
+source("https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinfo_asst3_part2_files/mutblast_functions.R")
+```
+
+
+### 3.3 Written answers
+
+<font size="4">
+**Que 1:** Download the whole set of E. coli gene DNA sequences and use gunzip to decompress. Use the makeblast() function to create a blast database. How many sequences are present in the E.coli set? <br>
+**Ans 1:** The whole set of E. coli gene DNA sequence was downloaded using the function download.file(). Inside the function, the argument “destfile” can be used to specify the name and the destination folder to be used. To compress or decompress files with “.gzip” and “.bzip2” formats, the function gunzip() from the R.utils library can be used. The argument “overwrite” when set to FALSE does not remove the original compressed file after decompressing. Further, the makeblastdb() function from the rBLAST library was used to creates a BLAST database from a FASTA file. There were 4140 sequences present in the E. coli set. 
+</font size>
+
+```{r echo=TRUE}
+download.file("ftp://ftp.ensemblgenomes.org/pub/bacteria/release-47/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655/cds/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz", destfile = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz")
+
+R.utils::gunzip("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa.gz",overwrite=FALSE)
+
+# Use the makeblast() function to create a blast database. 
+rBLAST::makeblastdb("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa",dbtype="nucl", "-parse_seqids")
+```
+<br><br>
+<font size="4">
+**Que 2:** Download the sample FASTA sequences and read them in as above. For your allocated sequence, determine the length (in bp) and the proportion of GC bases.<br>
+**Ans 2:** The sample FASTA sequences were downloaded by using the function download.file(). The read.fasta() function from the seqinr library was used to read the FASTA file and is assigned to sample_fasta. Sequence 11 was taken from the sample_fasta and is assigned to seq11 by sub-setting the sample_fasta. The sequence length of seq11 was calculated by using the getLength() function from the seqinr library. There were 1497 base pairs in the seq11. Finally, the GC() function from the seqinr library was applied to sums all “G” and “C” bases from a seq11. The proportion of GC bases were computed to be 0.5744823.
+</font size>
+
+```{r echo=TRUE}
+download.file("https://raw.githubusercontent.com/markziemann/SLE712_files/master/bioinfo_asst3_part2_files/sample.fa", destfile = "Data/sample.fa")
+sample_fasta <- seqinr::read.fasta("Data/sample.fa")
+
+# Subset sequence 11 
+seq11 <- sample_fasta[[11]]
+
+# Sequence length in bp
+seqinr::getLength(seq11)
+# 1497 bp
+
+# Proportion of GC bases
+seqinr::GC(seq11)
+# 0.5744823
+```
+
+<br><br>
+<font size="4">
+**Que 3:** You will be provided with R functions to create BLAST databases and perform blast searches. Use blast to identify what E. coli gene your sequence matches best. Show a table of the top 3 hits including percent identity, E-value and bit scores.<br>
+**Ans 3:** The function myblastn_tab() was provided to create BLAST databases and perform blast searches. The E. coli gene set was read by using read.fasta and is assigned to ecoli_seq. BLAST search was performed using the provided function myblastn_tab(). The arguments myseq can be used to assign sequence to be match while db specifies database to be used. The function was assigned to a variable results which returns the value of top hit. The percentage identity was found to be 100% with the given database. Further, top 3 hits were investigated and the results suggested that there were only one hit in the E. coli set. With 100% percentage identity, the E-value was calculated as 0 and the bitscore was computed as 2878.
+</font size>
+
+```{r echo=TRUE}
+myblastn_tab # provided R function
+
+ecoli_seq <- seqinr::read.fasta("Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+
+results <- myblastn_tab(myseq = seq11, db = "Data/Escherichia_coli_str_k_12_substr_mg1655.ASM584v2.cds.all.fa")
+results
+
+top3_hits <- results[1:3,]
+top3_hits
+```
+
+<br><br>
+<font size="4">
+**Que 4:** You will be provided with a function that enables you to make a set number of point mutations to your sequence of interest. Run the function and write an R code to check the number of mismatches between the original and mutated sequence.<br>
+**Ans 4:** The function mutator() was provided to create a set number of point mutations in the sequence of interest. In a sequence 11, 100 mutations were made using the mutator() function. To make a pairwise alignment, seq11 was converted to a string using the c2s() function. The string of characters will then be converted into a DNAString object by using the DNAString() function. After conversion, the pairwiseAlignment() function from the Biostrings library was applied to check the number of mismatches between seq11 and seq11_mut. The subject (in this case the mutated sequence) must be the second input of the function preceded by the pattern (in this case the original sequence) which can be a set of lists. The resulting alignment can now be used to determine the percent sequence identification using the pid() function. There was 94.92% sequence similarity between seq11 and seq11_mut. To calculate number of mismatches between sequence 11 and mutated sequence 11, the function nmismatch() was applied. The results showed 76 number of mismatches between seq11 and seq11_mut which could be due to overlapping of some base pairs.
+</font size>
+
+```{r echo=TRUE}
+mutator # Provided R function
+# create a mutated copy with 100 substitutions
+seq11_mut <- mutator(myseq=seq11,100)
+
+# now create a pairwise alignment
+seq11_mut_ <- DNAString(c2s(seq11_mut))
+seq11_ <- DNAString(c2s(seq11))
+aln <- Biostrings::pairwiseAlignment(seq11_,seq11_mut_)
+pid(aln)
+nmismatch(aln)
+
+```
+
+<br><br>
+<font size="4">
+**Que 5:** Using the provided functions for mutating and BLASTing a sequence, determine the number and proportion of sites that need to be altered to prevent the BLAST search from matching the gene of origin. Because the mutation is random, you may need to run this test multiple times to get a reliable answer.<br>
+**Ans 5:**
+</font size>
+
+```{r echo=TRUE}
+
+```
+
+<br><br>
+<font size="4">
+**Que 6:** Provide a chart or table that shows how the increasing proportion of mutated bases reduces the ability for BLAST to match the gene of origin. Summarize the results in 1 to 2 sentences.
+**Ans 6:**
+</font size>
+
+```{r echo=TRUE}
+
+```
+
+## References
+
+Ayyildiz, D & Piazza, S 2019, 'Introduction to Bioinformatics', Methods Mol Biol, vol. 1986, pp. 1-15.
+
+Bonnal, RJP, Yates, A, Goto, N, Gautier, L, Willis, S, Fields, C, Katayama, T & Prins, P 2019, 'Sharing Programming Resources Between Bio* Projects', Methods Mol Biol, vol. 1910, pp. 747-66.
+
+Chan, BKC 2018, 'Data Analysis Using R Programming', Adv Exp Med Biol, vol. 1082, pp. 47-122.
+
+Khan, NT 2018, 'Data Mining-Basics of Bioinformatics', Transcriptomics: Open Access, vol. 06, no. 01.
+

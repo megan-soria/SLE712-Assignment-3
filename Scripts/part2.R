@@ -135,8 +135,6 @@ all_tests <- rbind(test1, test2, test3, test4, test5)
 max_mut <- all_tests[order(-all_tests$num_mut),]
 head(max_mut, 10)
 
-# ANKUSH! no explanation what the previous function is used for, say here that it's weird 450 lim
-
 # blast_tester mutates a sequence in a defined number of places ("mut").
 # If a BLAST search against the original sequence returns a match, the function returns a 1. 
 # If the search result is NULL, it returns a 0. Input:
@@ -168,7 +166,7 @@ while (i < 800){
         blast_test_res[nrow(blast_test_res) + 1,] <- c(i,mean_blast_res)
         i <- i + 50
 }
-
+blast_test_res
 
 # 6. Provide a chart or table that shows how the increasing proportion of mutated bases reduces 
 #    the ability for BLAST to match the gene of origin. Summarise the results in 1 to 2 sentences.
