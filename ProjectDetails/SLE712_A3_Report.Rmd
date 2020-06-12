@@ -1,6 +1,5 @@
 ---
 output:
-  pdf_document: default
   html_document: default
 ---
 
@@ -455,14 +454,14 @@ ggplot(blast_test_res, aes(sites,prop)) +
         geom_line(color = "violet", size = 1 ) + 
         geom_point(shape=19,color="turquoise3", size= 3) + 
         theme_bw() + labs(title="Effect of Increasing Random Base Mutations to BLAST Peformance (100 iterations, 
-                          using Sequence 11)", 
+                          Sequence 11)", 
                           x="Number of sites randomised",
                           y="Proportion of successful BLASTs") + theme(plot.title = element_text(hjust = 0.5))
 
 ggplot(blast_test_res, aes(random,prop)) + 
         geom_line(color = "violet", size = 1 ) + 
         geom_point(shape=19,color="turquoise3", size= 3) + 
-        theme_bw()+ labs(title="Effect of Increasing Proportion of Base Mutations to BLAST Peformance (100 iterations, using
+        theme_bw()+ labs(title="Effect of Increasing Proportion of Base Mutations to BLAST Peformance (100 iterations, 
                          Sequence 11)", x="Number of sites randomised",
                          y="Proportion of successful BLASTs") + theme(plot.title = element_text(hjust = 0.5))
 ```
