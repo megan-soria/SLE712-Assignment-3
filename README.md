@@ -59,7 +59,7 @@ In this folder:
 
 - **Project Report** which should contain the answers to the questions from the assignment details. This currently includes:
   - An RMD file, "SLE712_A3_Report.docx". **It is recommended to copy and paste this RMD file in the main folder and run it there to make sure the scripts run properly**
-  - A HTML file and a PDF file of the same file name and content as the RMD file above
+  - An HTML file of the same file name and content as the RMD file above
   - A PDF file containing the original instructions for the project, "SLE712 Assignemnet 3 Details.docx"
 
 ## Getting Started
@@ -72,8 +72,10 @@ Things you need to install
 
 - R version 3.6.3 (2020-02-29)
 - RStudio Version 1.2.1335
-- Packages and Libraries 
+- Packages and Libraries
+
   *For part 2, make sure to install these packages before you run the code*
+  
   + seqinr
   + R.utils
   + rBLAST
