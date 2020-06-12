@@ -374,12 +374,12 @@ summary {
 <p>This file is a companion to the <strong>part2.R</strong> located at the Data folder of this repository. This file will give a brief description for each script together with its input and output.</p>
 <div id="download-a-file-from-a-url" class="section level3">
 <h3>Download a file from a URL</h3>
-<p>A file can de downloaded from an external URL using the function download.file(). The argument <em>destfile</em> can be used to specify the name and the destination folder to be used.</p>
+<p>A file can be downloaded from an external URL using the function download.file(). The argument <em>destfile</em> can be used to specify the name and the destination folder to be used.</p>
 <p><strong>Function:</strong> download.file()<br /> <strong>Input:</strong> URL, filename and/or destination folder <br /> <strong>Output:</strong> downloaded file</p>
 </div>
 <div id="unzip-a-.gz-file" class="section level3">
 <h3>Unzip a .gz file</h3>
-<p>The function gunzip() from the R.utils library can compress or decrompress files with <em>.gzip</em> and <em>.bzip2</em> formats. The argument <em>overwrite</em> when set to FALSE does not remove the original compressed file after decompressing.</p>
+<p>The function gunzip() from the R.utils library can compress or decompress files with <em>.gzip</em> and <em>.bzip2</em> formats. The argument <em>overwrite</em> when set to FALSE does not remove the original compressed file after decompressing.</p>
 <p><strong>Library:</strong> R.utils<br /> <strong>Function:</strong> gunzip()<br /> <strong>Input:</strong> filename of compressed file<br /> <strong>Output:</strong> decompressed file</p>
 </div>
 <div id="creating-a-blast-database" class="section level3">
@@ -430,21 +430,21 @@ results</code></pre>
 </div>
 <div id="creating-a-pairwise-alignment-and-counting-the-number-of-mismatches" class="section level3">
 <h3>Creating a pairwise alignment and counting the number of mismatches</h3>
-<p>To make a pairwise alignment, we must first convert the target sequence (seq11) which is a vector of characters into a string using the c2s() function. The string of characters will then be converted into a DNAString object by using the DNAString()function. Both of the studied sequences must be converted as shown in the code chunck below.</p>
+<p>To make a pairwise alignment, we must first convert the target sequence (seq11) which is a vector of characters into a string using the c2s() function. The string of characters will then be converted into a DNAString object by using the DNAString()function. Both of the studied sequences must be converted as shown in the code chunk below.</p>
 <pre class="r"><code>seq11_mut_ &lt;- DNAString(c2s(seq11_mut)) # mutated sequence
 seq11_ &lt;- DNAString(c2s(seq11)) # original sequence</code></pre>
-<p>Now that the sequence are in the appropriate DNAString class, we can now use the pairwiseAlignment() function from the Biostrings library. The subject (in this case the mutated sequence) must be the second input of the function preceeded by the pattern (in this case the original sequence) which can be a set of lists.</p>
+<p>Now that the sequence are in the appropriate DNAString class, we can now use the pairwiseAlignment() function from the Biostrings library. The subject (in this case the mutated sequence) must be the second input of the function preceded by the pattern (in this case the original sequence) which can be a set of lists.</p>
 <p><strong>Library:</strong> Biostrings<br /> <strong>Function:</strong> pairwiseAlignment()<br /> <strong>Input:</strong> set of strings (sequences to be aligned) <br /> <strong>Output:</strong> PairwiseAlignmentsSingleSubject class</p>
 <pre class="r"><code>aln &lt;- Biostrings::pairwiseAlignment(seq11_,seq11_mut_)
 aln</code></pre>
 <pre><code>## Global PairwiseAlignmentsSingleSubject (1 of 1)
 ## pattern: ATGACGCAATACTGGCTGGGGTTAGATTGTGGCG...CTTTCACGCCCGCATTAAGGAGCACACATTATGA
-## subject: ATGACGCAATATTGGCTGGGGTAAGATTGTGGCG...CTTTCACGCCCGCATTAAGGAGCGCACATTATGA
-## score: 2383.511</code></pre>
-<p>The resulting alignment can now be used to determine the percent sequence identification using the pid() funtion.</p>
+## subject: ATGACGCAATACTGGCTGGGGTTAGATTGTGGCG...CTTTCACGCCCGCATTAAGGAGTACACATTATGA
+## score: 2383.508</code></pre>
+<p>The resulting alignment can now be used to determine the percent sequence identification using the pid() function.</p>
 <pre class="r"><code>pid(aln)</code></pre>
 <pre><code>## [1] 95.05678</code></pre>
-<p>Or determine the number of mismateches using the nmismatch() function.</p>
+<p>Or determine the number of mismatches using the nmismatch() function.</p>
 <pre class="r"><code>nmismatch(aln)</code></pre>
 <pre><code>## [1] 74</code></pre>
 </div>
@@ -454,10 +454,20 @@ aln</code></pre>
 <p><strong>Library:</strong> seqinr<br /> <strong>Function:</strong> write.fasta()<br /> <strong>Input:</strong> vector of single characters <br /> <strong>Output:</strong> .fa file</p>
 <pre class="r"><code>write.fasta(seq11, names= &quot;seq11&quot;, file.out = &quot;Data/seq11.fa&quot;)</code></pre>
 </div>
+<div id="determining-the-limit-of-blast" class="section level3">
+<h3>Determining the limit of BLAST</h3>
+<p>The blast_lim is a function that tests the maximum number of mutations that can still return a BLAST search match when compared to the original sequence. It takes an initial number of mutations used to mutate the original sequence, makes a BLAST search, and repeats this process in defined increments until the search returns NULL. It stores each iteration in a table with the last row as the highest number of mutations that returned a match.</p>
+<p><strong>Function:</strong> blast_lim <br /> <strong>Input:</strong> init_mut (initial number of mutations) and mut_incr (number of mutations added per iteration) <br /> <strong>Output:</strong> Data frame</p>
+</div>
+</div>
+<div id="blast_tester" class="section level2">
+<h2>blast_tester</h2>
+<p>blast_tester mutates a sequence in a defined number of places (“mut”). If a BLAST search against the original sequence returns a match, the function returns a 1. If the search result is NULL, it returns a 0.</p>
+<p><strong>Function:</strong> blast_tester <br /> <strong>Input:</strong> mut (number of mutations to be applied in the sequence) <br /> <strong>Output:</strong> 1 or 0</p>
 </div>
 <div id="additional-methods-to-determine-details-of-a-function" class="section level2">
 <h2>Additional Methods to determine details of a function</h2>
-<p>R has a built in library of decriptions for its functions. To access these descriptions, use the <em>?</em> symbol followed by the name of the function and run that within the R script or the console. The descriptions will be shown in the Help tab located by default at the lower right corner of the R environment.</p>
+<p>R has a built in library of descriptions for its functions. To access these descriptions, use the <em>?</em> symbol followed by the name of the function and run that within the R script or the console. The descriptions will be shown in the Help tab located by default at the lower right corner of the R environment.</p>
 <pre class="r"><code>?mean </code></pre>
 <pre><code>## Help on topic 'mean' was found in the following packages:
 ## 

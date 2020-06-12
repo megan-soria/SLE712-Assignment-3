@@ -173,7 +173,16 @@ The blast_lim is a function that tests the maximum number of mutations that can 
 
 **Function:** blast_lim <br />
 **Input:** init_mut (initial number of mutations) and mut_incr (number of mutations added per iteration) <br />
-**Output:**
+**Output:** Data frame
+
+
+## blast_tester
+blast_tester mutates a sequence in a defined number of places ("mut"). If a BLAST search against the original sequence returns a match, the function returns a 1. If the search result is NULL, it returns a 0. 
+
+
+**Function:** blast_tester <br />
+**Input:** mut (number of mutations to be applied in the sequence) <br />
+**Output:** 1 or 0
 
 
 ## Additional Methods to determine details of a function
